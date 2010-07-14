@@ -6,7 +6,7 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "VLCMediaLibrary.h"
+#import "MLMediaLibrary.h"
 #import "ShowEpisode.h"
 
 #import "Show.h"
@@ -26,8 +26,8 @@
     [self willChangeValueForKey:@"unread"];
     [self setPrimitiveUnread:unread];
     [self didChangeValueForKey:@"unread"];
-    [[[VLCLMediaLibrary sharedMediaLibrary] managedObjectContext] refreshObject:[self show] mergeChanges:YES];
-    [[[VLCLMediaLibrary sharedMediaLibrary] managedObjectContext] refreshObject:self mergeChanges:YES];
+    [[[MLMediaLibrary sharedMediaLibrary] managedObjectContext] refreshObject:[self show] mergeChanges:YES];
+    [[[MLMediaLibrary sharedMediaLibrary] managedObjectContext] refreshObject:self mergeChanges:YES];
 }
 
 @dynamic theTVDBID;
