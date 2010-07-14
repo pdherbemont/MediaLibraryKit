@@ -2,6 +2,8 @@
 require 'rubygems'
 require 'nokogiri'
 require 'Text'
+require 'open-uri'
+require 'json'
 
 $building_blocks = {}
 
@@ -9,47 +11,23 @@ $building_blocks['NoExt'] = Proc.new do |fileName|
   (/^(.*)\.([a-z]){2,4}$/i.match(fileName)||['',fileName])[1]
 end
 
-$building_blocks['DotsBecomeSpaces'] = Proc.new do |fileName|
-  fileName.gsub('.',' ')
+$building_blocks['DotsAndUnderscoresBecomeSpaces'] = Proc.new do |fileName|
+  fileName.gsub(/\.|_/,' ')
 end
 
 $building_blocks['DeleteAfterKeyword'] = Proc.new do |fileName|
-  match = /(TRUEFRENCH|DVDRIP|XVID|DIVX|BDRIP|REPACK)/i.match(fileName)
-  match ? fileName[0...match.begin(0)] : fileName
-end
-
-$building_blocks['DeleteAfterYears'] = Proc.new do |fileName|
-  match = /((19|20)\d\d)/.match(fileName)
-  match ? fileName[0...match.begin(0)] : fileName
-end
-
-$building_blocks['DeleteAfterCaseSensitiveKeyword'] = Proc.new do |fileName|
-  match = /(FRENCH)/i.match(fileName)
-  match ? fileName[0...match.begin(0)] : fileName
+  match = /(TRUEFRENCH|DVDRIP|XVID|DIVX|BDRIP|REPACK|RIPPDVD)/i.match(fileName) # Case-insensitive
+  ifFileName = match ? fileName[0...match.begin(0)] : fileName
+  match_sensitive = /(FRENCH|((19|20)\d\d))/.match(ifFileName) # Case-sensitive
+  match_sensitive ? ifFileName[0...match_sensitive.begin(0)] : ifFileName
 end
 
 $building_blocks['DeleteBetweenParenthesis'] = Proc.new do |fileName|
   fileName.gsub(/\(.*\)/, '')
 end
 
-$building_blocks['CollapseWhitespaces'] = Proc.new do |fileName|
-  fileName.gsub(/\s+/, ' ')
-end
-
-$building_blocks['RemoveYears'] = Proc.new do |fileName|
-  fileName.gsub(/(19|20)\d\d/, '')
-end
-
-$building_blocks['UnderscoresBecomeSpaces'] = Proc.new do |fileName|
-  fileName.gsub('_', ' ')
-end
-
-$building_blocks['StripWhitespaces'] = Proc.new do |fileName|
-  fileName.strip
-end
-
-$building_blocks['Capitalize'] = Proc.new do |fileName|
-  fileName.capitalize
+$building_blocks['CapitalizeThenCollapseAndStripWhitespaces'] = Proc.new do |fileName|
+  fileName.capitalize.gsub(/\s+/, ' ').strip
 end
 
 # ---------------- DO NOT MODIFY BELOW HERE -------------
@@ -74,6 +52,7 @@ end
 
 doc = Nokogiri::HTML(open('MovieLibrary.html'))
 results = {}
+
 $algorithms.each do |algorithm|
   totalScore = 0.0
   doc.css('#movie_file_names tr').each do |movie|
@@ -100,3 +79,28 @@ end
 results.sort{|a,b| a[1]<=>b[1]}.each do |algo, score|
   puts "#{score.round} for #{algo.inspect}"
 end
+
+best_algorithm = results.sort{|a,b| a[1]<=>b[1]}.first[0]
+matches = 0
+non_matches = 0
+doc.css('#movie_file_names tr').each do |movie|
+  original_file_node = movie.css('td:first-child').first
+  if (original_file_node != nil)
+    original_file_name = original_file_node.content
+    computed_movie_name = original_file_name
+    best_algorithm.each do |block_name|
+      computed_movie_name = $building_blocks[block_name].call(computed_movie_name)
+    end
+    url = URI.escape("http://api.allocine.fr/xml/search?q=#{computed_movie_name}&json=1&partner=1")
+    open(url) do |f|
+      begin
+        puts "#{computed_movie_name.inspect} is in reality #{JSON.parse(f.read)['feed']['movie'][0]['originalTitle'].inspect}"
+        matches += 1
+      rescue
+        puts "Noting in the JSON for #{computed_movie_name.inspect} (Loaded at #{url.inspect})"
+        non_matches += 1
+      end
+    end
+  end
+end
+puts "In the end Allocine found #{matches}, and couldn't find #{non_matches} movies"
