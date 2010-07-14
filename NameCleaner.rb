@@ -4,12 +4,12 @@ require 'nokogiri'
 require 'Text'
 
 def cleanName(originalFileName)
-  return originalFileName
+  fileNameWithoutExtension = /^(.*)\.([a-z]){2,4}$/i.match(originalFileName)[1]
+  return fileNameWithoutExtension
 end
 
-
 def rankDifference(originalString, givenString)
-  return   Text::Levenshtein.distance(originalString, givenString).to_f/([originalString.length, givenString.length].max.to_f)
+  return 100.0 * Text::Levenshtein.distance(originalString, givenString).to_f/([originalString.length, givenString.length].max.to_f)
 end
 
 doc = Nokogiri::HTML(open('MovieLibrary.html'))
@@ -24,4 +24,4 @@ doc.css('#movie_file_names tr').each do |movie|
   end
 end
 puts "-----------------"
-puts "TOTAL SCORE (lower is better): #{totalScore}"
+puts "TOTAL SCORE (lower is better): #{totalScore.round}"
