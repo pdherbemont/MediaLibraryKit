@@ -14,11 +14,18 @@ $building_blocks['DotsBecomeSpaces'] = Proc.new do |fileName|
 end
 
 $building_blocks['DeleteAfterKeyword'] = Proc.new do |fileName|
-  (/^(.*)(TRUEFRENCH|DVDRIP|XVID|DIVX)(.*)$/i.match(fileName) || ['',fileName])[1]
+  match = /(TRUEFRENCH|DVDRIP|XVID|DIVX|BDRIP|REPACK)/i.match(fileName)
+  match ? fileName[0...match.begin(0)] : fileName
+end
+
+$building_blocks['DeleteAfterYears'] = Proc.new do |fileName|
+  match = /((19|20)\d\d)/.match(fileName)
+  match ? fileName[0...match.begin(0)] : fileName
 end
 
 $building_blocks['DeleteAfterCaseSensitiveKeyword'] = Proc.new do |fileName|
-  (/^(.*)(FRENCH)(.*)$/.match(fileName) || ['',fileName])[1]
+  match = /(FRENCH)/i.match(fileName)
+  match ? fileName[0...match.begin(0)] : fileName
 end
 
 $building_blocks['DeleteBetweenParenthesis'] = Proc.new do |fileName|
@@ -38,7 +45,7 @@ $building_blocks['UnderscoresBecomeSpaces'] = Proc.new do |fileName|
 end
 
 $building_blocks['StripWhitespaces'] = Proc.new do |fileName|
-  fileName.strop
+  fileName.strip
 end
 
 $building_blocks['Capitalize'] = Proc.new do |fileName|
@@ -56,7 +63,9 @@ def combine_building_blocks(available_block_names, current_block_stack)
   end
 end
 
+puts "Building algorithms..." if ARGV.member?('v')
 combine_building_blocks($building_blocks.keys, [])
+puts "Done !" if ARGV.member?('v')
 
 def rankDifference(originalString, givenString)
   # return 100.0 * Text::Levenshtein.distance(originalString, givenString).to_f/([originalString.length, givenString.length].max.to_f)
