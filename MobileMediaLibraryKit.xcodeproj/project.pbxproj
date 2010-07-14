@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		631867A111EE57B900AB038D /* MLURLConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 6318679F11EE57B900AB038D /* MLURLConnection.h */; };
+		631867A211EE57B900AB038D /* MLURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 631867A011EE57B900AB038D /* MLURLConnection.m */; };
 		636E9E1F11ED4054002FE8A9 /* MLMediaLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 636E9E1D11ED4054002FE8A9 /* MLMediaLibrary.h */; };
 		636E9E2011ED4054002FE8A9 /* MLMediaLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 636E9E1E11ED4054002FE8A9 /* MLMediaLibrary.m */; };
 		636E9E2A11ED40C2002FE8A9 /* MLMovieInfoGrabber.h in Headers */ = {isa = PBXBuildFile; fileRef = 636E9E2211ED40C2002FE8A9 /* MLMovieInfoGrabber.h */; };
@@ -57,6 +59,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6318679F11EE57B900AB038D /* MLURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLURLConnection.h; sourceTree = "<group>"; };
+		631867A011EE57B900AB038D /* MLURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLURLConnection.m; sourceTree = "<group>"; };
 		636E9E1D11ED4054002FE8A9 /* MLMediaLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMediaLibrary.h; sourceTree = "<group>"; };
 		636E9E1E11ED4054002FE8A9 /* MLMediaLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLMediaLibrary.m; sourceTree = "<group>"; };
 		636E9E2211ED40C2002FE8A9 /* MLMovieInfoGrabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMovieInfoGrabber.h; sourceTree = "<group>"; };
@@ -164,6 +168,8 @@
 				636E9E2911ED40C2002FE8A9 /* MLTVShowInfoGrabber.m */,
 				63D0CAE311EE137900A2801F /* NSXMLNode_Additions.h */,
 				63D0CAE411EE137900A2801F /* NSXMLNode_Additions.m */,
+				6318679F11EE57B900AB038D /* MLURLConnection.h */,
+				631867A011EE57B900AB038D /* MLURLConnection.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -285,6 +291,7 @@
 				63D0CB3411EE15CD00A2801F /* ShowEpisode.h in Headers */,
 				63D0CB3611EE15CD00A2801F /* File.h in Headers */,
 				63D0CB3811EE15CD00A2801F /* Label.h in Headers */,
+				631867A111EE57B900AB038D /* MLURLConnection.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +360,7 @@
 				63D0CB3711EE15CD00A2801F /* File.m in Sources */,
 				63D0CB3911EE15CD00A2801F /* Label.m in Sources */,
 				63D0CB3A11EE15CD00A2801F /* MediaLibrary.xcdatamodel in Sources */,
+				631867A211EE57B900AB038D /* MLURLConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -92,7 +92,7 @@ else
 NSAssert(_node != NULL, @"CXMLNode does not have attached libxml2 _node.");
 xmlChar *theXMLString;
 BOOL theFreeReminderFlag = NO;
-if (_node->type == XML_TEXT_NODE || _node->type == XML_CDATA_SECTION_NODE) 
+if (_node->type == XML_TEXT_NODE || _node->type == XML_CDATA_SECTION_NODE)
 	theXMLString = _node->content;
 else
 	{
@@ -175,7 +175,7 @@ while (theCurrentNode != NULL)
 	[theChildren addObject:theNode];
 	theCurrentNode = theCurrentNode->next;
 	}
-return(theChildren);      
+return(theChildren);
 }
 
 - (CXMLNode *)childAtIndex:(NSUInteger)index
@@ -305,7 +305,7 @@ else
 		xmlNodePtr theNode = theXPathObject->nodesetval->nodeTab[N];
 		[theArray addObject:[CXMLNode nodeWithLibXMLNode:theNode freeOnDealloc:NO]];
 		}
-		
+
 	theResult = theArray;
 	}
 
@@ -317,6 +317,89 @@ return(theResult);
 //- (NSArray *)objectsForXQuery:(NSString *)xquery constants:(NSDictionary *)constants error:(NSError **)error;
 //- (NSArray *)objectsForXQuery:(NSString *)xquery error:(NSError **)error;
 
+
+@dynamic node;
+
+
+
+- (id)initWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc
+{
+    if ((self = [super init]) != NULL)
+	{
+        _node = inLibXMLNode;
+        _freeNodeOnRelease = infreeOnDealloc;
+	}
+    return(self);
+}
+
++ (id)nodeWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc
+{
+    // TODO more checking.
+    if (inLibXMLNode->_private)
+        return(inLibXMLNode->_private);
+
+    Class theClass = [CXMLNode class];
+    switch (inLibXMLNode->type)
+	{
+        case XML_ELEMENT_NODE:
+            theClass = [CXMLElement class];
+            break;
+        case XML_DOCUMENT_NODE:
+            theClass = [CXMLDocument class];
+            break;
+        case XML_ATTRIBUTE_NODE:
+        case XML_TEXT_NODE:
+        case XML_CDATA_SECTION_NODE:
+        case XML_COMMENT_NODE:
+            break;
+        default:
+            NSAssert1(NO, @"TODO Unhandled type (%d).", inLibXMLNode->type);
+            return(NULL);
+	}
+
+    CXMLNode *theNode = [[[theClass alloc] initWithLibXMLNode:inLibXMLNode freeOnDealloc:infreeOnDealloc] autorelease];
+
+
+    if (inLibXMLNode->doc != NULL)
+	{
+        CXMLDocument *theXMLDocument = inLibXMLNode->doc->_private;
+        if (theXMLDocument != NULL)
+		{
+            NSAssert([theXMLDocument isKindOfClass:[CXMLDocument class]] == YES, @"TODO");
+
+            [[theXMLDocument nodePool] addObject:theNode];
+
+            theNode->_node->_private = theNode;
+		}
+	}
+    return(theNode);
+}
+
+
+- (NSString *)stringValueForXPath:(NSString *)string
+{
+    NSArray *nodes = [self nodesForXPath:string error:nil];
+    if ([nodes count] == 0)
+        return nil;
+    return [[nodes objectAtIndex:0] stringValue];
+}
+
+- (NSNumber *)numberValueForXPath:(NSString *)string
+{
+    NSArray *nodes = [self nodesForXPath:string error:nil];
+    if ([nodes count] == 0)
+        return nil;
+    NSScanner *scanner = [NSScanner scannerWithString:[[nodes objectAtIndex:0] stringValue]];
+    NSInteger i;
+    if ([scanner scanInteger:&i])
+        return [NSNumber numberWithInteger:i];
+    return nil;
+}
+
+- (xmlNodePtr)node
+{
+    return(_node);
+}
 
 @end
 

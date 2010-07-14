@@ -39,7 +39,7 @@ enum {
 @interface CXMLDocument : CXMLNode {
 	NSMutableSet *nodePool;
 }
-
+@property (retain,readwrite) NSMutableSet *nodePool;
 - (id)initWithData:(NSData *)inData options:(NSUInteger)inOptions error:(NSError **)outError;
 - (id)initWithData:(NSData *)inData encoding:(NSStringEncoding)encoding options:(NSUInteger)inOptions error:(NSError **)outError;
 - (id)initWithXMLString:(NSString *)inString options:(NSUInteger)inOptions error:(NSError **)outError;

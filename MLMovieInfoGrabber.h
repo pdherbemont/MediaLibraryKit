@@ -15,10 +15,15 @@
     id<MLMovieInfoGrabberDelegate> _delegate;
 #if HAVE_BLOCK
     void (^_block)(NSError *);
+#else
+    id _userData;
 #endif
 }
 
 @property (readwrite, assign) id<MLMovieInfoGrabberDelegate> delegate;
+#if !HAVE_BLOCK
+@property (readwrite, retain) id userData;
+#endif
 @property (readonly, retain) NSArray *results;
 
 - (void)lookUpForTitle:(NSString *)title;

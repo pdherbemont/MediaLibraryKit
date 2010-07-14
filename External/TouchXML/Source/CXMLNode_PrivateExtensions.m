@@ -32,68 +32,7 @@
 #import "CXMLElement.h"
 #import "CXMLDocument_PrivateExtensions.h"
 
-@implementation CXMLNode (CXMLNode_PrivateExtensions)
+@implementation CXMLNode (dd)
 
-@dynamic node;
-
-
-
-- (id)initWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc
-{
-if ((self = [super init]) != NULL)
-	{
-	_node = inLibXMLNode;
-	_freeNodeOnRelease = infreeOnDealloc;
-	}
-return(self);
-}
-
-+ (id)nodeWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc
-{
-// TODO more checking.
-if (inLibXMLNode->_private)
-	return(inLibXMLNode->_private);
-
-Class theClass = [CXMLNode class];
-switch (inLibXMLNode->type)
-	{
-	case XML_ELEMENT_NODE:
-		theClass = [CXMLElement class];
-		break;
-	case XML_DOCUMENT_NODE:
-		theClass = [CXMLDocument class];
-		break;
-	case XML_ATTRIBUTE_NODE:
-	case XML_TEXT_NODE:
-	case XML_CDATA_SECTION_NODE:
-	case XML_COMMENT_NODE:
-		break;
-	default:
-		NSAssert1(NO, @"TODO Unhandled type (%d).", inLibXMLNode->type);
-		return(NULL);
-	}
-
-CXMLNode *theNode = [[[theClass alloc] initWithLibXMLNode:inLibXMLNode freeOnDealloc:infreeOnDealloc] autorelease];
-
-
-if (inLibXMLNode->doc != NULL)
-	{
-	CXMLDocument *theXMLDocument = inLibXMLNode->doc->_private;
-	if (theXMLDocument != NULL)
-		{
-		NSAssert([theXMLDocument isKindOfClass:[CXMLDocument class]] == YES, @"TODO");
-
-		[[theXMLDocument nodePool] addObject:theNode];
-
-		theNode->_node->_private = theNode;
-		}
-	}
-return(theNode);
-}
-
-- (xmlNodePtr)node
-{
-return(_node);
-}
 
 @end

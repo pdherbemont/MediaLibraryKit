@@ -8,24 +8,88 @@
 
 #import "MLTVShowInfoGrabber.h"
 #import "TheTVDBGrabber.h"
+#import "MLURLConnection.h"
 
 @interface MLTVShowInfoGrabber ()
+#if !HAVE_BLOCK
+    <MLURLConnectionDelegate>
+#endif
 @property (readwrite, retain) NSArray *results;
 @end
 
 @implementation MLTVShowInfoGrabber
 @synthesize delegate=_delegate;
 @synthesize results=_results;
+#if !HAVE_BLOCK
+@synthesize userData=_userData;
+#endif
 
 static NSDate *gLastFetch = nil;
 static NSNumber *gServerTime = nil;
 
+- (void)dealloc
+{
+    [_data release];
+    [_connection release];
+    [_results release];
+    [super dealloc];
+}
+
+#if !HAVE_BLOCK
+- (void)urlConnection:(MLURLConnection *)connection didFinishWithError:(NSError *)error
+{
+    if ([connection.userObject isEqualToString:@"fetchUpdatesSinceServerTime"]) {
+        // We are coming form -fetchUpdatesSinceServerTime
+        if (error)
+            return;
+
+        NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithData:connection.data options:0 error:nil];
+        NSNumber *serverTime = [[xmlDoc rootElement] numberValueForXPath:@"./Time"];
+
+        [gServerTime release];
+        [gLastFetch release];
+        gServerTime = [serverTime retain];
+        gLastFetch = [[NSDate dateWithTimeIntervalSinceNow:0] retain];
+
+        NSArray *nodes = [xmlDoc nodesForXPath:@"./Items/Series" error:&error];
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:[nodes count]];
+        for (NSXMLNode *node in nodes) {
+            NSNumber *id = [node numberValueForXPath:@"."];
+            [array addObject:id];
+        }
+
+        [_delegate tvShowInfoGrabber:self didFetchUpdates:array];
+    } else {
+        NSAssert([connection.userObject isEqualToString:@"fetchServerTime"], @"Unkown callback emitter");
+        if (error) {
+            [_delegate tvShowInfoGrabberDidFetchServerTime:self];
+            return;
+        }
+        [gServerTime release];
+        [gLastFetch release];
+        NSData *data = connection.data;
+        NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithData:connection.data options:0 error:nil];
+        NSNumber *serverTime = [[xmlDoc rootElement] numberValueForXPath:@"./Time"];
+
+        gServerTime = [serverTime retain];
+        gLastFetch = [[NSDate dateWithTimeIntervalSinceNow:0] retain];
+
+        [_delegate tvShowInfoGrabberDidFetchServerTime:self];
+    }
+}
+
+- (void)fetchUpdatesSinceServerTime:(NSNumber *)serverTime
+{
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TVDB_QUERY_UPDATES, TVDB_HOSTNAME, serverTime]];
+
+    [MLURLConnection runConnectionWithURL:url delegate:self userObject:@"fetchUpdatesSinceServerTime"];
+}
+
+#else
 + (void)fetchUpdatesSinceServerTime:(NSNumber *)serverTime andExecuteBlock:(void (^)(NSArray *))block
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TVDB_QUERY_UPDATES, TVDB_HOSTNAME, serverTime]];
 
-    NSLog(@"Accessing %@", url);
-#if HAVE_BLOCK
     [MLURLConnection runConnectionWithURL:url andBlock:^(MLURLConnection *connection, NSError *error) {
         if (error) {
             return;
@@ -46,9 +110,32 @@ static NSNumber *gServerTime = nil;
         }
         block(array);
     }];
+}
 #endif
+
+#if !HAVE_BLOCK
++ (NSNumber *)serverTime
+{
+    return gServerTime;
 }
 
+- (void)fetchServerTime
+{
+    if (gLastFetch && gServerTime) {
+        // Only fetch the serverTime every hour
+        // FIXME: Have a default for that?
+        NSDate *oneHourAgo = [NSDate dateWithTimeIntervalSinceNow:5 * 60 /* Every 5 mins */];
+        if ([oneHourAgo earlierDate:gLastFetch] == gLastFetch) {
+            [_delegate tvShowInfoGrabberDidFetchServerTime:self];
+            return;
+        }
+    }
+
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TVDB_QUERY_SERVER_TIME, TVDB_HOSTNAME]];
+    [MLURLConnection runConnectionWithURL:url delegate:self userObject:@"fetchServerTime"];
+}
+
+#else
 + (void)fetchServerTimeAndExecuteBlock:(void (^)(NSNumber *))block
 {
 
@@ -57,14 +144,13 @@ static NSNumber *gServerTime = nil;
         // FIXME: Have a default for that?
         NSDate *oneHourAgo = [NSDate dateWithTimeIntervalSinceNow:5 * 60 /* Every 5 mins */];
         if ([oneHourAgo earlierDate:gLastFetch] == gLastFetch) {
-            block(gServerTime);
+            [_delegate tvShowInfoGrabberDidFetchServerTime:self];
             return;
         }
     }
 
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TVDB_QUERY_SERVER_TIME, TVDB_HOSTNAME]];
 
-#if HAVE_BLOCK
     [MLURLConnection runConnectionWithURL:url andBlock:^(MLURLConnection *connection, NSError *error) {
         if (error) {
             block(nil);
@@ -79,24 +165,16 @@ static NSNumber *gServerTime = nil;
         gServerTime = [serverTime retain];
         gLastFetch = [[NSDate dateWithTimeIntervalSinceNow:0] retain];
 
-        block(gServerTime);
+        [_delegate tvShowInfoGrabberDidFetchServerTime:self];
     }];
+}
 #endif
-}
 
-- (void)dealloc
-{
-    [_data release];
-    [_connection release];
-    [_results release];
-    [super dealloc];
-}
 
 - (void)lookUpForTitle:(NSString *)title
 {
     NSString *escapedString = [title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TVDB_QUERY_SEARCH, TVDB_HOSTNAME, escapedString]];
-    NSLog(@"Accessing %@", url);
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15];
     [_connection cancel];
     [_connection release];
@@ -114,7 +192,6 @@ static NSNumber *gServerTime = nil;
 - (void)lookUpForShowID:(NSString *)showId
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TVDB_QUERY_EPISODE_INFO, TVDB_HOSTNAME, TVDB_API_KEY, showId, TVDB_DEFAULT_LANGUAGE]];
-    NSLog(@"Accessing %@", url);
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15];
     [_connection cancel];
     [_connection release];
@@ -178,12 +255,15 @@ static NSNumber *gServerTime = nil;
                 continue;
             NSString *title = [node stringValueForXPath:@"./SeriesName"];
             NSString *release = [node stringValueForXPath:@"./FirstAired"];
-            NSDateFormatter *inputFormatter = [[[NSDateFormatter alloc] init] autorelease];
-            [inputFormatter setDateFormat:@"yyyy-MM-dd"];
-            NSDateFormatter *outputFormatter = [[[NSDateFormatter alloc] init] autorelease];
-            [outputFormatter setDateFormat:@"yyyy"];
-            NSDate *releaseDate = [inputFormatter dateFromString:release];
-            NSString *releaseYear = releaseDate ? [outputFormatter stringFromDate:releaseDate] : nil;
+            NSString *releaseYear = nil;
+            if (release) {
+                NSDateFormatter *inputFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                [inputFormatter setDateFormat:@"yyyy-MM-dd"];
+                NSDateFormatter *outputFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                [outputFormatter setDateFormat:@"yyyy"];
+                NSDate *releaseDate = [inputFormatter dateFromString:release];
+                releaseYear = releaseDate ? [outputFormatter stringFromDate:releaseDate] : nil;
+            }
 
             NSString *artworkURL = [node stringValueForXPath:@"./banner"];
             NSString *shortSummary = [node stringValueForXPath:@"./Overview"];

@@ -14,7 +14,6 @@
 #define NSXMLNode CXMLNode
 
 #import "TouchXML.h"
-#define MLURLConnection NSURLConnection
 #else
 #define HAVE_BLOCK 1
 #endif

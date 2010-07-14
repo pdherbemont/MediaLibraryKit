@@ -80,4 +80,11 @@ typedef enum {
 - (NSString *)XMLStringWithOptions:(NSUInteger)options;
 //- (NSString *)canonicalXMLStringPreservingComments:(BOOL)comments;
 - (NSArray *)nodesForXPath:(NSString *)xpath error:(NSError **)error;
+
+@property (readonly, nonatomic, assign) xmlNodePtr node;
+
+- (id)initWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc;
+
++ (id)nodeWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc;
+
 @end

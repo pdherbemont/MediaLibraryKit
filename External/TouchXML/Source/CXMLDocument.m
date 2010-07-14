@@ -45,7 +45,7 @@
 if ((self = [super init]) != NULL)
 	{
 	NSError *theError = NULL;
-	
+
 	#if TOUCHXMLUSETIDY
 	if (inOptions & CXMLDocumentTidyHTML)
 		{
@@ -56,7 +56,7 @@ if ((self = [super init]) != NULL)
 		inString = [[CTidy tidy] tidyString:inString inputFormat:TidyFormat_XML outputFormat:TidyFormat_XML diagnostics:NULL error:&theError];
 		}
 	#endif
-	
+
 	xmlDocPtr theDoc = xmlParseDoc((xmlChar *)[inString UTF8String]);
 	if (theDoc != NULL)
 		{
@@ -67,14 +67,14 @@ if ((self = [super init]) != NULL)
 	else
 		{
 		xmlErrorPtr	theLastErrorPtr = xmlGetLastError();
-		
+
 		NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 			[NSString stringWithUTF8String:theLastErrorPtr->message], NSLocalizedDescriptionKey,
 			NULL];
-		
-		
+
+
 		theError = [NSError errorWithDomain:@"CXMLErrorDomain" code:1 userInfo:theUserInfo];
-		
+
 		xmlResetLastError();
 		}
 
@@ -92,7 +92,7 @@ return(self);
 
 - (id)initWithData:(NSData *)inData options:(NSUInteger)inOptions error:(NSError **)outError
 {
-	return [self initWithData:inData encoding:NSUTF8StringEncoding options:inOptions error:outError];	 
+	return [self initWithData:inData encoding:NSUTF8StringEncoding options:inOptions error:outError];
 }
 
 - (id)initWithData:(NSData *)inData encoding:(NSStringEncoding)encoding options:(NSUInteger)inOptions error:(NSError **)outError
@@ -100,7 +100,7 @@ return(self);
 if ((self = [super init]) != NULL)
 	{
 	NSError *theError = NULL;
-	
+
 	#if TOUCHXMLUSETIDY
 	if (inOptions & CXMLDocumentTidyHTML)
 		{
@@ -111,7 +111,7 @@ if ((self = [super init]) != NULL)
 		inData = [[CTidy tidy] tidyData:inData inputFormat:TidyFormat_XML outputFormat:TidyFormat_XML diagnostics:NULL error:&theError];
 		}
 	#endif
-	
+
 	if (theError == NULL)
 		{
 		xmlDocPtr theDoc = NULL;
@@ -122,7 +122,7 @@ if ((self = [super init]) != NULL)
 			const char *enc = CFStringGetCStringPtr(cfencstr, 0);
 			theDoc = xmlReadMemory([inData bytes], [inData length], NULL, enc, XML_PARSE_RECOVER | XML_PARSE_NOWARNING);
 			}
-		
+
 		if (theDoc != NULL)
 			{
 			_node = (xmlNodePtr)theDoc;
@@ -165,7 +165,7 @@ else
 	{
 	self = NULL;
 	}
-	
+
 return(self);
 }
 
@@ -197,7 +197,7 @@ _node = NULL;
 - (CXMLElement *)rootElement
 {
 xmlNodePtr theLibXMLNode = xmlDocGetRootElement((xmlDocPtr)_node);
-	
+
 return([CXMLNode nodeWithLibXMLNode:theLibXMLNode freeOnDealloc:NO]);
 }
 
@@ -241,9 +241,33 @@ int buffersize;
 xmlDocDumpFormatMemory((xmlDocPtr)(self->_node), &xmlbuff, &buffersize, 1);
 NSString *dump = [[[NSString alloc] initWithBytes:xmlbuff length:buffersize encoding:NSUTF8StringEncoding] autorelease];
 xmlFree(xmlbuff);
-						   
+
 [result appendString:dump];
 return result;
+}
+
+- (void)insertChild:(CXMLNode *)child atIndex:(NSUInteger)index
+{
+    [self.nodePool addObject:child];
+
+    CXMLNode *theCurrentNode = [self.children objectAtIndex:index];
+    xmlAddPrevSibling(theCurrentNode->_node, child->_node);
+}
+
+- (void)addChild:(CXMLNode *)child
+{
+    [self.nodePool addObject:child];
+
+    xmlAddChild(self->_node, child->_node);
+}
+
+- (NSMutableSet *)nodePool
+{
+    if (nodePool == NULL)
+	{
+        nodePool = [[NSMutableSet alloc] init];
+	}
+    return(nodePool);
 }
 
 @end

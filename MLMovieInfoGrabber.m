@@ -28,8 +28,14 @@
 @implementation MLMovieInfoGrabber
 @synthesize delegate=_delegate;
 @synthesize results=_results;
+#if !HAVE_BLOCK
+@synthesize userData=_userData;
+#endif
 - (void)dealloc
 {
+#if !HAVE_BLOCK
+    [_userData release];
+#endif
     [_data release];
     [_connection release];
     [_results release];
@@ -44,7 +50,6 @@
 {
     NSString *escapedString = [title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TMDB_QUERY_SEARCH, TMDB_HOSTNAME, escapedString, TMDB_API_KEY]];
-    NSLog(@"Accessing %@", url);
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15];
     [_connection cancel];
     [_connection release];
@@ -108,12 +113,15 @@
                 continue;
             NSString *title = [node stringValueForXPath:@"./title"];
             NSString *release = [node stringValueForXPath:@"./release"];
-            NSDateFormatter *inputFormatter = [[[NSDateFormatter alloc] init] autorelease];
-            [inputFormatter setDateFormat:@"yyyy-MM-dd"];
-            NSDateFormatter *outputFormatter = [[[NSDateFormatter alloc] init] autorelease];
-            [outputFormatter setDateFormat:@"yyyy"];
-            NSDate *releaseDate = [inputFormatter dateFromString:release];
-            NSString *releaseYear = releaseDate ? [outputFormatter stringFromDate:releaseDate] : nil;
+            NSString *releaseYear = nil;
+            if (release) {
+                NSDateFormatter *inputFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                [inputFormatter setDateFormat:@"yyyy-MM-dd"];
+                NSDateFormatter *outputFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                [outputFormatter setDateFormat:@"yyyy"];
+                NSDate *releaseDate = [inputFormatter dateFromString:release];
+                releaseYear = releaseDate ? [outputFormatter stringFromDate:releaseDate] : nil;
+            }
 
 
             //NSLog(@"%@", title);

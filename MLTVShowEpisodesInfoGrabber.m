@@ -9,6 +9,7 @@
 #import "MLTVShowEpisodesInfoGrabber.h"
 
 #import "TheTVDBGrabber.h"
+#import "MLURLConnection.h"
 
 @interface MLTVShowEpisodesInfoGrabber ()
 @property (readwrite, retain) NSDictionary *results;
@@ -21,8 +22,12 @@
 @synthesize delegate=_delegate;
 @synthesize episodesResults=_episodesResults;
 @synthesize results=_results;
+#if !HAVE_BLOCK
+@synthesize userData=_userData;
+#endif
 - (void)dealloc
 {
+    [_userData release];
     [_connection release];
     [_results release];
     [_episodesResults release];
@@ -32,6 +37,20 @@
 #endif
     [super dealloc];
 }
+
+#if !HAVE_BLOCK
+- (void)urlConnection:(MLURLConnection *)connection didFinishWithError:(NSError *)error
+{
+    if (error) {
+        [_connection release];
+        _connection = nil;
+        [self autorelease];
+        return;
+    }
+    [self didReceiveData:connection.data];
+    [self autorelease];
+}
+#endif
 
 - (void)lookUpForShowID:(NSString *)showId
 {
@@ -55,7 +74,7 @@
         [self autorelease];
     }] retain];
 #else
-    NSLog(@"%s: Unimplemented", __PRETTY_FUNCTION__);
+    _connection = [[MLURLConnection runConnectionWithURL:url delegate:self userObject:nil] retain];
 #endif
 }
 

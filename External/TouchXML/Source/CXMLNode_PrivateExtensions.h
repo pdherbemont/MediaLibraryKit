@@ -31,10 +31,4 @@
 
 @interface CXMLNode (CXMLNode_PrivateExtensions)
 
-@property (readonly, nonatomic, assign) xmlNodePtr node;
-
-- (id)initWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc;
-
-+ (id)nodeWithLibXMLNode:(xmlNodePtr)inLibXMLNode freeOnDealloc:(BOOL)infreeOnDealloc;
-
 @end

@@ -9,14 +9,23 @@
 #import "MLMediaLibrary.h"
 #import "MLTitleDecrapifier.h"
 #import "MLMovieInfoGrabber.h"
+#import "MLTVShowInfoGrabber.h"
+#import "MLTVShowEpisodesInfoGrabber.h"
 #import "File.h"
 #import "Label.h"
 #import "ShowEpisode.h"
 #import "Show.h"
 
+// Pref key
+static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 
+#if HAVE_BLOCK
 @interface MLMediaLibrary ()
+#else
+@interface MLMediaLibrary () <MLMovieInfoGrabberDelegate, MLTVShowEpisodesInfoGrabberDelegate, MLTVShowInfoGrabberDelegate>
+#endif
 - (NSManagedObjectContext *)managedObjectContext;
+- (void)startUpdateDB;
 @end
 
 @implementation MLMediaLibrary
@@ -25,6 +34,7 @@
     static id sharedMediaLibrary = nil;
     if (!sharedMediaLibrary) {
         sharedMediaLibrary = [[[self class] alloc] init];
+        NSLog(@"Initializing db in %@", [sharedMediaLibrary databaseFolderPath]);
         [sharedMediaLibrary startUpdateDB];
     }
     return sharedMediaLibrary;
@@ -35,6 +45,7 @@
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSManagedObjectContext *moc = [self managedObjectContext];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entity inManagedObjectContext:moc];
+    NSAssert(entityDescription, @"No entity");
     [request setEntity:entityDescription];
     return [request autorelease];
 }
@@ -55,10 +66,10 @@
     return _managedObjectModel;
 }
 
-- (NSURL *)databaseFolder
+- (NSString *)databaseFolderPath
 {
     // FIXME
-    return  [NSURL fileURLWithPath:[@"~/Library" stringByExpandingTildeInPath]];
+    return  [@"~/Library" stringByExpandingTildeInPath];
 ;
 }
 
@@ -67,9 +78,9 @@
     if (_managedObjectContext)
         return _managedObjectContext;
 
-    NSString *databaseFolder = [[self databaseFolder] absoluteString];
+    NSString *databaseFolderPath = [self databaseFolderPath];
 
-    NSURL *url = [NSURL fileURLWithPath:[databaseFolder stringByAppendingPathComponent: @"MediaLibrary.sqlite"]];
+    NSURL *url = [NSURL fileURLWithPath:[databaseFolderPath stringByAppendingPathComponent: @"MediaLibrary.sqlite"]];
     NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
 
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -90,6 +101,7 @@
         NSRunInformationalAlertPanel(@"Relaunch Lunettes now", @"We need to relaunch Lunettes to proceed", @"OK", nil, nil);
         [NSApp terminate:nil];
 #else
+        NSLog(@"%@: %@", url, error);
         abort();
 #endif
     }
@@ -179,12 +191,74 @@
     *wasInserted = NO;
     if (!show) {
         *wasInserted = YES;
+        NSLog(@"Creating %@", showName);
         show = [self createObjectForEntity:@"Show"];
         show.name = showName;
     }
     *returnedShow = show;
     return [self showEpisodeWithShow:show episodeNumber:episodeNumber seasonNumber:seasonNumber];
 }
+
+#if !HAVE_BLOCK
+- (void)tvShowEpisodesInfoGrabberDidFinishGrabbing:(MLTVShowEpisodesInfoGrabber *)grabber
+{
+    Show *show = grabber.userData;
+
+    NSArray *results = grabber.episodesResults;
+    [show setValue:[grabber.results objectForKey:@"serieArtworkURL"] forKey:@"artworkURL"];
+    for (id result in results) {
+        if ([[result objectForKey:@"serie"] boolValue]) {
+            continue;
+        }
+        ShowEpisode *showEpisode = [self showEpisodeWithShow:show episodeNumber:[result objectForKey:@"episodeNumber"] seasonNumber:[result objectForKey:@"seasonNumber"]];
+        showEpisode.name = [result objectForKey:@"title"];
+        showEpisode.theTVDBID = [result objectForKey:@"id"];
+        showEpisode.shortSummary = [result objectForKey:@"shortSummary"];
+        showEpisode.artworkURL = [result objectForKey:@"artworkURL"];
+        showEpisode.lastSyncDate = [MLTVShowInfoGrabber serverTime];
+    }
+    show.lastSyncDate = [MLTVShowInfoGrabber serverTime];
+}
+
+- (void)tvShowInfoGrabberDidFinishGrabbing:(MLTVShowInfoGrabber *)grabber
+{
+    Show *show = grabber.userData;
+    NSArray *results = grabber.results;
+    if ([results count] > 0) {
+        NSDictionary *result = [results objectAtIndex:0];
+        NSString *showId = [result objectForKey:@"id"];
+
+        show.theTVDBID = showId;
+        show.name = [result objectForKey:@"title"];
+        show.shortSummary = [result objectForKey:@"shortSummary"];
+        show.releaseYear = [result objectForKey:@"releaseYear"];
+
+        // Fetch episodes info
+        MLTVShowEpisodesInfoGrabber *grabber = [[[MLTVShowEpisodesInfoGrabber alloc] init] autorelease];
+        grabber.delegate = self;
+        grabber.userData = show;
+        [grabber lookUpForShowID:showId];
+    }
+    else {
+        // Not found.
+        show.lastSyncDate = [MLTVShowInfoGrabber serverTime];
+    }
+}
+
+- (void)tvShowInfoGrabberDidFetchServerTime:(MLTVShowInfoGrabber *)grabber
+{
+    Show *show = grabber.userData;
+
+    [[NSUserDefaults standardUserDefaults] setInteger:[[MLTVShowInfoGrabber serverTime] integerValue] forKey:kLastTVDBUpdateServerTime];
+
+    // First fetch the Show ID
+    MLTVShowInfoGrabber *showInfoGrabber = [[[MLTVShowInfoGrabber alloc] init] autorelease];
+    showInfoGrabber.delegate = self;
+    showInfoGrabber.userData = show;
+
+    [showInfoGrabber lookUpForTitle:show.name];
+}
+#endif
 
 - (void)fetchMetaDataForShow:(Show *)show
 {
@@ -234,7 +308,10 @@
         }];
     }];
 #else
-    abort();
+    MLTVShowInfoGrabber *grabber = [[[MLTVShowInfoGrabber alloc] init] autorelease];
+    grabber.delegate = self;
+    grabber.userData = show;
+    [grabber fetchServerTime];
 #endif
 }
 
@@ -273,6 +350,24 @@
  * File auto detection
  */
 
+#if !HAVE_BLOCK
+- (void)movieInfoGrabberDidFinishGrabbing:(MLMovieInfoGrabber *)grabber
+{
+    NSNumber *yes = [NSNumber numberWithBool:YES];
+
+    NSArray *results = grabber.results;
+    File *file = grabber.userData;
+    if ([results count] > 0) {
+        NSDictionary *result = [results objectAtIndex:0];
+        file.artworkURL = [result objectForKey:@"artworkURL"];
+        file.title = [result objectForKey:@"title"];
+        file.shortSummary = [result objectForKey:@"shortSummary"];
+        file.releaseYear = [result objectForKey:@"releaseYear"];
+    }
+    file.hasFetchedInfo = yes;
+}
+#endif
+
 - (void)fetchMetaDataForFile:(File *)file
 {
     NSNumber *yes = [NSNumber numberWithBool:YES];
@@ -285,7 +380,11 @@
     }
 
     // Go online and fetch info.
+
+    // We don't care about keeping a reference to track the item during its life span
+    // because we are a singleton
     MLMovieInfoGrabber *grabber = [[[MLMovieInfoGrabber alloc] init] autorelease];
+
 #if HAVE_BLOCK
     [grabber lookUpForTitle:file.title andExecuteBlock:^(NSError *err){
         if (err)
@@ -302,12 +401,15 @@
         file.hasFetchedInfo = yes;
     }];
 #else
-    abort();
+    grabber.userData = file;
+    grabber.delegate = self;
+    [grabber lookUpForTitle:file.title];
 #endif
 }
 
 - (void)addFilePath:(NSString *)filePath
 {
+    NSLog(@"Adding %@", filePath);
     NSString *url = [NSURL fileURLWithPath:filePath];
     NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
     NSString *title = [filePath lastPathComponent];
@@ -348,13 +450,11 @@
     NSUInteger count = [filepaths count];
     NSMutableArray *fetchPredicates = [NSMutableArray arrayWithCapacity:count];
     NSMutableDictionary *urlToObject = [NSMutableDictionary dictionaryWithCapacity:count];
-    NSMutableArray *filePathsToAdd = [NSMutableArray arrayWithCapacity:count];
 
     // Prepare a fetch request for all items
     for (NSString *path in filepaths) {
         NSURL *url = [NSURL fileURLWithPath:path];
         NSString *urlDescription = [url description];
-        [filePathsToAdd addObject:urlDescription];
         [fetchPredicates addObject:[NSPredicate predicateWithFormat:@"url == %@", urlDescription]];
         [urlToObject setObject:url forKey:urlDescription];
     }
@@ -367,17 +467,29 @@
     NSArray *dbResults = [[self managedObjectContext] executeFetchRequest:request error:nil];
     NSLog(@"Done");
 
+    NSMutableArray *filePathsToAdd = [NSMutableArray arrayWithArray:filepaths];
 
     // Remove objects that are already in db.
     for (NSManagedObjectContext *dbResult in dbResults) {
         NSString *url = [dbResult valueForKey:@"url"];
-        [filePathsToAdd removeObject:url];
+        [filePathsToAdd removeObject:[urlToObject objectForKey:url]];
     }
 
     // Add only the newly added items
     for (NSString* path in filePathsToAdd)
         [self addFilePath:path];
 }
+
+#if !HAVE_BLOCK
+- (void)tvShowInfoGrabber:(MLTVShowInfoGrabber *)grabber didFetchUpdates:(NSArray *)updates
+{
+    NSFetchRequest *request = [self fetchRequestForEntity:@"Show"];
+    [request setPredicate:[NSComparisonPredicate predicateWithLeftExpression:[NSExpression expressionForKeyPath:@"theTVDBID"] rightExpression:[NSExpression expressionForConstantValue:updates] modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:0]];
+    NSArray *results = [[self managedObjectContext] executeFetchRequest:request error:nil];
+    for (Show *show in results)
+        [self fetchMetaDataForShow:show];
+}
+#endif
 
 - (void)startUpdateDB
 {
@@ -396,15 +508,19 @@
     for (Show *show in results)
         [self fetchMetaDataForShow:show];
 
+    NSNumber *lastServerTime = [NSNumber numberWithInteger:[[NSUserDefaults standardUserDefaults] integerForKey:kLastTVDBUpdateServerTime]];
 #if HAVE_BLOCK
-    NSInteger lastServerTime = [[NSUserDefaults standardUserDefaults] integerForKey:kLastTVDBUpdateServerTime];
-    [MLTVShowInfoGrabber fetchUpdatesSinceServerTime:[NSNumber numberWithInteger:lastServerTime] andExecuteBlock:^(NSArray *updates){
+    [MLTVShowInfoGrabber fetchUpdatesSinceServerTime:lastServerTime andExecuteBlock:^(NSArray *updates){
         NSFetchRequest *request = [self fetchRequestForEntity:@"Show"];
         [request setPredicate:[NSComparisonPredicate predicateWithLeftExpression:[NSExpression expressionForKeyPath:@"theTVDBID"] rightExpression:[NSExpression expressionForConstantValue:updates] modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:0]];
         NSArray *results = [[self managedObjectContext] executeFetchRequest:request error:nil];
         for (Show *show in results)
             [self fetchMetaDataForShow:show];
     }];
+#else
+    MLTVShowInfoGrabber *grabber = [[[MLTVShowInfoGrabber alloc] init] autorelease];
+    grabber.delegate = self;
+    [grabber fetchUpdatesSinceServerTime:lastServerTime];
 #endif
     /* Update every hour - FIXME: Preferences key */
     [self performSelector:@selector(startUpdateDB) withObject:nil afterDelay:60 * 60];

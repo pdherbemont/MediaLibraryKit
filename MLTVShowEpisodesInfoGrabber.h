@@ -16,11 +16,17 @@
     NSArray *_episodesResults;
     id<MLTVShowEpisodesInfoGrabberDelegate> _delegate;
     void (^_block)();
+#if !HAVE_BLOCK
+    id _userData;
+#endif
 }
 
 @property (readwrite, assign) id<MLTVShowEpisodesInfoGrabberDelegate> delegate;
 @property (readonly, retain) NSArray *episodesResults;
 @property (readonly, retain) NSDictionary *results;
+#if !HAVE_BLOCK
+@property (readwrite, retain) id userData;
+#endif
 
 - (void)lookUpForShowID:(NSString *)id;
 
