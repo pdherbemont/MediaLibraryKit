@@ -25,6 +25,26 @@ $building_blocks['DeleteBetweenParenthesis'] = Proc.new do |fileName|
   fileName.gsub(/\(.*\)/, '')
 end
 
+$building_blocks['CollapseWhitespaces'] = Proc.new do |fileName|
+  fileName.gsub(/\s+/, ' ')
+end
+
+$building_blocks['RemoveYears'] = Proc.new do |fileName|
+  fileName.gsub(/(19|20)\d\d/, '')
+end
+
+$building_blocks['UnderscoresBecomeSpaces'] = Proc.new do |fileName|
+  fileName.gsub('_', ' ')
+end
+
+$building_blocks['StripWhitespaces'] = Proc.new do |fileName|
+  fileName.strop
+end
+
+$building_blocks['Capitalize'] = Proc.new do |fileName|
+  fileName.capitalize
+end
+
 # ---------------- DO NOT MODIFY BELOW HERE -------------
 
 $algorithms = []
@@ -39,7 +59,8 @@ end
 combine_building_blocks($building_blocks.keys, [])
 
 def rankDifference(originalString, givenString)
-  return 100.0 * Text::Levenshtein.distance(originalString, givenString).to_f/([originalString.length, givenString.length].max.to_f)
+  # return 100.0 * Text::Levenshtein.distance(originalString, givenString).to_f/([originalString.length, givenString.length].max.to_f)
+  return Text::Levenshtein.distance(originalString, givenString)
 end
 
 doc = Nokogiri::HTML(open('MovieLibrary.html'))
