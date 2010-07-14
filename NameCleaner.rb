@@ -6,18 +6,26 @@ require 'Text'
 $building_blocks = {}
 
 $building_blocks['NoExt'] = Proc.new do |fileName|
-  (/^(.*)\.([a-z]){2,4}$/i.match(fileName)||['', fileName])[1]
+  (/^(.*)\.([a-z]){2,4}$/i.match(fileName)||['',fileName])[1]
 end
 
-$building_blocks['NoExt2'] = Proc.new do |fileName|
-  (/^(.*)\.([a-z]){2,4}$/i.match(fileName)||['', fileName])[1]
+$building_blocks['DotsBecomeSpaces'] = Proc.new do |fileName|
+  fileName.gsub('.',' ')
 end
 
-$building_blocks['NoExt3'] = Proc.new do |fileName|
-  (/^(.*)\.([a-z]){2,4}$/i.match(fileName)||['', fileName])[1]
+$building_blocks['DeleteAfterKeyword'] = Proc.new do |fileName|
+  (/^(.*)(TRUEFRENCH|DVDRIP|XVID|DIVX)(.*)$/i.match(fileName) || ['',fileName])[1]
 end
 
+$building_blocks['DeleteAfterCaseSensitiveKeyword'] = Proc.new do |fileName|
+  (/^(.*)(FRENCH)(.*)$/.match(fileName) || ['',fileName])[1]
+end
 
+$building_blocks['DeleteBetweenParenthesis'] = Proc.new do |fileName|
+  fileName.gsub(/\(.*\)/, '')
+end
+
+# ---------------- DO NOT MODIFY BELOW HERE -------------
 
 $algorithms = []
 
@@ -30,60 +38,12 @@ end
 
 combine_building_blocks($building_blocks.keys, [])
 
-# algorithms['Naive'] = Proc.new do |fileName|
-#   fileName
-# end
-# 
-# algorithms['RemoveExtension'] = Proc.new do |fileName|
-#   fileNameWithoutExtension = /^(.*)\.([a-z]){2,4}$/i.match(fileName)[1]
-#   fileNameWithoutExtension
-# end
-# 
-# 
-# algorithms['RemoveExtensionAndRenameDots'] = Proc.new do |fileName|
-#   fileNameWithoutExtension = /^(.*)\.([a-z]){2,4}$/i.match(fileName)[1]
-#   dots_removed = fileNameWithoutExtension.gsub('.', ' ')
-#   everything_before_bad_keyword = (/^(.*)(FRENCH|DVDRIP|XVID|DIVX)(.*)$/i.match(dots_removed) || ['', dots_removed])[1]
-#   everything_before_bad_keyword
-# end
-# 
-# algorithms['R3'] = Proc.new do |fileName|
-#   fileNameWithoutExtension = /^(.*)\.([a-z]){2,4}$/i.match(fileName)[1]
-#   dots_removed = fileNameWithoutExtension.gsub('.', ' ')
-#   everything_before_bad_keyword_case_sensitive = (/^(.*)(FRENCH)(.*)$/.match(dots_removed) || ['', dots_removed])[1]
-#   everything_before_bad_keyword = (/^(.*)(TRUEFRENCH|DVDRIP|XVID|DIVX)(.*)$/i.match(everything_before_bad_keyword_case_sensitive) || ['', everything_before_bad_keyword_case_sensitive])[1]
-#   everything_before_bad_keyword
-# end
-# 
-# algorithms['R3'] = Proc.new do |fileName|
-#   fileNameWithoutExtension = /^(.*)\.([a-z]){2,4}$/i.match(fileName)[1]
-#   dots_removed = fileNameWithoutExtension.gsub('.', ' ')
-#   everything_before_bad_keyword_case_sensitive = (/^(.*)(FRENCH)(.*)$/.match(dots_removed) || ['', dots_removed])[1]
-#   everything_before_bad_keyword = (/^(.*)(TRUEFRENCH|DVDRIP|XVID|DIVX)(.*)$/i.match(everything_before_bad_keyword_case_sensitive) || ['', everything_before_bad_keyword_case_sensitive])[1]
-#   everything_before_bad_keyword
-# end
-# 
-# algorithms['R4'] = Proc.new do |fileName|
-#   fileNameWithoutExtension = /^(.*)\.([a-z]){2,4}$/i.match(fileName)[1]
-#   dots_removed = fileNameWithoutExtension.gsub('.', ' ')
-#   everything_before_bad_keyword_case_sensitive = (/^(.*)(FRENCH)(.*)$/.match(dots_removed) || ['', dots_removed])[1]
-#   everything_before_bad_keyword = (/^(.*)(TRUEFRENCH|DVDRIP|XVID|DIVX)(.*)$/i.match(everything_before_bad_keyword_case_sensitive) || ['', everything_before_bad_keyword_case_sensitive])[1]
-#   remove_between_parenthesis = everything_before_bad_keyword.gsub(/\(.*\)/, '')
-#   remove_between_parenthesis
-# end
-# 
-
-
-
-
-# ---------------- DO NOT MODIFY BELOW HERE -------------
-
-
 def rankDifference(originalString, givenString)
   return 100.0 * Text::Levenshtein.distance(originalString, givenString).to_f/([originalString.length, givenString.length].max.to_f)
 end
 
 doc = Nokogiri::HTML(open('MovieLibrary.html'))
+results = {}
 $algorithms.each do |algorithm|
   totalScore = 0.0
   doc.css('#movie_file_names tr').each do |movie|
@@ -102,7 +62,11 @@ $algorithms.each do |algorithm|
     end
   end
   puts "-----------------" if ARGV.member?('v')
-  puts "TOTAL SCORE for #{algorithm.inspect} : (lower is better): #{totalScore.round}"
+  puts "TOTAL SCORE for #{algorithm.inspect} : (lower is better): #{totalScore.round}" if ARGV.member?('v')
+  results[algorithm] = totalScore
   puts " " if ARGV.member?('v')
   puts " " if ARGV.member?('v')
+end
+results.sort{|a,b| a[1]<=>b[1]}.each do |algo, score|
+  puts "#{score.round} for #{algo.inspect}"
 end
