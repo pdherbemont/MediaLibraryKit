@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'nokogiri'
+require 'Text'
 
 def cleanName(originalFileName)
   return originalFileName
@@ -8,11 +9,7 @@ end
 
 
 def rankDifference(originalString, givenString)
-  if (originalString == givenString)
-    return 0.0
-  else
-    return 1.0
-  end
+  return   Text::Levenshtein.distance(originalString, givenString).to_f/([originalString.length, givenString.length].max.to_f)
 end
 
 doc = Nokogiri::HTML(open('MovieLibrary.html'))
