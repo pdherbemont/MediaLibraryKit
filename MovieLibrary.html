@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr" dir="ltr">
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>Title</title>
+  <style type="text/css">
+    span.parti_pris { text-decoration: underline; font-style: italic;}
+  </style>
+  <script type="text/javascript"></script>
+</head>
+
+<body>
+  <h1>Librairie de scan</h1>
+  <h2>Objectifs :</h2>
+  <p>Permettre de récupérer tout plein de metadata sur un fichier vidéo. Une image, un titre, un sous titre, une année, etc... Ces informations devront être stockées par la librairie (elle gère donc le caching).</p>
+  <p><span class="parti_pris">Parti pris</span> On exclut les fichiers audio.</p>
+  <h2>API</h2>
+  <p>Voilà la liste des appels que l'on veut pouvoir faire :</p>
+  <div>
+    <h3>GetInfoForFileName(fileName)</h3>
+    <p>Appel bloquant qui retourne toutes les informations que l'on a sur le fichier 'filename'. Peut retourner "NULL" si l'on n'a pas encore indexé le fichier.</p>
+    <h3>IndexContentOfFolder(folderPath)</h3>
+    <p>Appel bloquant qui réindexe tout le contenu de 'folderPath'.</p>
+  </div>
+  <h2>Architecture</h2>
+  <p>On a une architecture en "pipeline" :</p>
+  <h3>Etape 1 : Name cleaner</h3>
+  <p>L'objectif est de nettoyer les noms de fichiers.</p>
+  <h2>Cas vicieux</h2>
+  <p>Les cas vicieux à prévoir (ou pas) :</p>
+  <ul>
+    <li>Network share</li>
+    <li>Films dans un dossier (e.g. Dossier "99_Francs", contenant "Part_1.avi" et "Part_2.avi")</li>
+  </ul>
+
+  <h2>Appendices</h2>
+  <h3>Liste de noms de fichiers "réels"</h3>
+  <table>
+    <tr><td>10000.B.C.TRUEFRENCH.R5.XviD-CiNEFOX.avi</td></tr>
+    <tr><td>134Certains l'aiment froide (ou Les raleurs font leur beurre) ( Louis De Funès ) RippDVD.avi</td></tr>
+    <tr><td>143 Papa, Maman, La Bonne Et Moi ( Louis De Funès ) RippDVD.avi</td></tr>
+    <tr><td>144 Un Coup Fumant ( Louis De Funès ) RippDVD.avi</td></tr>
+    <tr><td>17.Again.FRENCH.DVDRiP.XViD-SURViVAL(Smartorrent).avi</td></tr>
+    <tr><td>2012.FRENCH.BDRiP.REPACK.1CD.XviD-LECHTI.avi</td></tr>
+    <tr><td>28 Semaines Plus Tard .avi</td></tr>
+    <tr><td>5x2 Cinq  fois Deux.avi</td></tr>
+    <tr><td>A.Serious.Man.2009.LIMITED.FRENCH.REPACK.1CD.BDRiP.XviD-SLiM.avi</td></tr>
+    <tr><td>Air.Rage.FRENCH.DVDRiP.DiVX-BlueeeMasKKK.avi</td></tr>
+    <tr><td>Alexandre le bienheureux.avi</td></tr>
+    <tr><td>Ali Baba Et Les 40 Voleurs (Fernandel) Divx Fr.avi</td></tr>
+    <tr><td>Amours.Chiennes.2000.FRENCH.DVDRiP.XViD-RMB.avi</td></tr>
+    <tr><td>APPEL.AU.MEURTRE.(DVDRiP.Zone2-DivX.5.1.1).avi</td></tr>
+    <tr><td>Appelez-moi Mathilde.avi</td></tr>
+    <tr><td>Au-Dela.De.Nos.Reves.1998.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>B-Girl.2009.STV.FRENCH.DVDRiP.XviD-SLiM.avi</td></tr>
+    <tr><td>Bagdad café.avi</td></tr>
+    <tr><td>Bancs.Publics.Versailles.Rive.Droite.FRENCH.REPACK.1CD.DVDRiP.XviD-SLiM.avi</td></tr>
+    <tr><td>Baraka .avi</td></tr>
+    <tr><td>BARON ROUGE French DVDRip XviD[cool68].avi</td></tr>
+    <tr><td>Battle.For.Haditha.2007.FRENCH.BDRiP.XviD-Broomfield.avi</td></tr>
+    <tr><td>Battle.For.Haditha.2007.FRENCH.BDRiP.XviD.avi</td></tr>
+    <tr><td>Beaumarchais l'insolent.avi</td></tr>
+    <tr><td>Beethoven 1.avi</td></tr>
+    <tr><td>Beethoven 2.AVI</td></tr>
+    <tr><td>Beethoven 3.avi</td></tr>
+    <tr><td>Beethoven 4.avi</td></tr>
+    <tr><td>Beignets_de_tomates_vertes.divx.avi</td></tr>
+    <tr><td>Bleu d'enfer.FRENCH.DVDRiP.XViD-GeT.lte.avi</td></tr>
+    <tr><td>Blood.and.Bone.(2009).TRUEFRENCH.DVDRip.XviD-SuRiCaT.avi</td></tr>
+    <tr><td>Blues brothers 2000.avi</td></tr>
+    <tr><td>Boudu.avi</td></tr>
+    <tr><td>Bride.Wars.FRENCH.DVDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>Burn after reading by boy.avi</td></tr>
+    <tr><td>Cesar.divx.avi</td></tr>
+    <tr><td>Chapter.27.FRENCH.DVDRip.XviD-ULTRASON.avi</td></tr>
+    <tr><td>Charlie Chaplin (1925) - La ruee vers l or By Nidhal & tunisia-sat.com.avi</td></tr>
+    <tr><td>Chéri.2009.FRENCH.DVDRiP.XViD.MZISYS.avi</td></tr>
+    <tr><td>Coco.Avant.Chanel.REPACK.1CD.FRENCH.DVDRip.XviD-GKS.avi</td></tr>
+    <tr><td>Coco.Chanel.PART1.2008.STV.FRENCH.DVDRiPXviD-NoTaG.avi</td></tr>
+    <tr><td>COIFFEUR_POUR_DAMES.avi</td></tr>
+    <tr><td>Confessions d'une adorable emmerdeuse.avi</td></tr>
+    <tr><td>Couples.Retreat.FRENCH.BDRiP.REPACK.1CD.XviD-LECHTI.avi</td></tr>
+    <tr><td>Crocodile.French.DVDRip.XviD.Fix-WOW.avi</td></tr>
+    <tr><td>Cyprien.FRENCH.DVDRiP.XViD-PATACHOUN.avi</td></tr>
+    <tr><td>Dady.Day.Care.FRENCH.DVDRiP.XviD-VeLL.avi</td></tr>
+    <tr><td>DANCE FLICK 2009 French DVDRip XviD Ac3 5.1 [cool68].avi</td></tr>
+    <tr><td>Dans La Brume Electrique French Dvdrip (Isisatis) Xvid.avi</td></tr>
+    <tr><td>Dans La Peau D'une Blonde - Fr.avi</td></tr>
+    <tr><td>Darkness.Falls.FRENCH.DVDRip.XviD-Ulysse.avi</td></tr>
+    <tr><td>De.L.Autre.Cote.Du.Lit.FRENCH.DVDRip.XviD-NERD.avi</td></tr>
+    <tr><td>De.La.Guerre.2009.FRENCH.DVDRiP.REPACK.1CD.XViD-DLG.avi</td></tr>
+    <tr><td>Death and the maiden.avi</td></tr>
+    <tr><td>Demandez la permission aux enfants By Toniodesbois.avi</td></tr>
+    <tr><td>Deux fils de pute.avi</td></tr>
+    <tr><td>Dien Bien Phu.avi</td></tr>
+    <tr><td>Disaster.Movie.FRENCH.DVDRiP.XviD-ULTRASON.avi</td></tr>
+    <tr><td>Dragon.Hunter.2010.FRENCHEDIT.DVDRIP..avi</td></tr>
+    <tr><td>Eden Lake.avi</td></tr>
+    <tr><td>En cloque, mode d'emploi.avi</td></tr>
+    <tr><td>Entre Les Murs.avi</td></tr>
+    <tr><td>Erreur.De.La.Banque.En.Votre.Faveur.FRENCH.DVDRiP.XViD-PROD.By.YATTA69.avi</td></tr>
+    <tr><td>Espion.Et.Demi.2001.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>Et.Apres.FRENCH.DVDRiP.XViD-UNSKiLLED.avi</td></tr>
+    <tr><td>Et.Toi.T.Es.Sur.Qui.FRENCH.DVDRiP.XViD-NTK.avi</td></tr>
+    <tr><td>Fais-moi plaisir ! By MouduGaz.avi</td></tr>
+    <tr><td>Fanny.avi</td></tr>
+    <tr><td>Fantômes contre Fantômes French Dvdrip.avi</td></tr>
+    <tr><td>Fausse.Donne.FRENCH.DVDRip.XviD-FuRTiF-Fuck.SarKo.avi</td></tr>
+    <tr><td>Fenetre_Secrete.FRENCH.DVDRip.XViD-LiQUiDE.avi</td></tr>
+    <tr><td>Fighter.In.The.Wind.FRENCH.LiMiTED.DVDRip-XViD-KYoKuSHiN.avi</td></tr>
+    <tr><td>Fired.Up.UNRATED.FRENCH.DVDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>Flawless.2007.LiMiTED.FRENCH.DVDRiP.XviD-STS.avi</td></tr>
+    <tr><td>Frost.Nixon.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>Garde rapprochee.avi</td></tr>
+    <tr><td>Go Fast.avi</td></tr>
+    <tr><td>Golden.Child.l'enfant.Sacré.Du.Tibet.1986.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>Harvey Milk.avi</td></tr>
+    <tr><td>Hell.Ride.FRENCH.DVDRiP.XviD-ULTRASON.avi</td></tr>
+    <tr><td>Henri.Lee.Lucas.2010.FRENCH.DVDRIP.XVID-DUB.avi</td></tr>
+    <tr><td>Hes.Just.Not.That.Into.You.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>Home.2009.FRENCH.DVDRiP.XViD-RLD.avi</td></tr>
+    <tr><td>Hotel.For.Dogs.FRENCH.DVDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>Humains.2009.FRENCH.DVDRIP.XVID-BN DIV.MZISYS.avi</td></tr>
+    <tr><td>Idiocracy.2007.FRENCH.DVDRiP.XViD-wdf.avi</td></tr>
+    <tr><td>Il était une fois au Mexique... Desperado 2.FRENCH.DVDRip.XViD-MrP.avi</td></tr>
+    <tr><td>Ils.FRENCH.DVDRip.XviD-LOST-AceBot.avi</td></tr>
+    <tr><td>Indiana.Jones.and.the.Kingdom.of.the.Crystal.Skull.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>Influences.2003.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>Intern.Academy.FRENCH.DVDRiP.XViD-NYJ.avi</td></tr>
+    <tr><td>Iron Man.avi</td></tr>
+    <tr><td>Je.Vais.Te.Manquer.FRENCH.DVDRiP.XViD-PROD.avi</td></tr>
+    <tr><td>Journey.To.The.Center.Of.The.Earth.FRENCH.DVDRiP.XviD-ULTRASON.avi</td></tr>
+    <tr><td>Judge.Dredd.1995.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>Jumper.2008.TRUEFRENCH.DVDRiP.XViD-iPS.avi</td></tr>
+    <tr><td>King Kong .avi</td></tr>
+    <tr><td>Kung.Fu.Panda.FRENCH.DVDRiP.XviD-ULTRASON.avi</td></tr>
+    <tr><td>L'affaire Van Haken .avi</td></tr>
+    <tr><td>L'effet papillon 2.avi</td></tr>
+    <tr><td>L'ete Meurtrier (Dvix Fr).avi</td></tr>
+    <tr><td>L'INCROYABLE.DESTIN.DE.HAROLD.CRICK.(2006).Vraie.VF.Divx6.French.DVDRip.ARLBOUFFIARD.avi</td></tr>
+    <tr><td>L'ombre blanche .avi</td></tr>
+    <tr><td>L.Armee.Du.Crime.2009.FRENCH.REPACK.1CD.BDRip.XviD-ATeam.avi</td></tr>
+    <tr><td>L.Empire.Des.loups.2004.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>L.Esprit.de.Cain.(Raising.Cain).DVDRip.Divx.FR.Ripped.by.GiRoMuSaN.avi</td></tr>
+    <tr><td>La Chute.avi</td></tr>
+    <tr><td>La Fille Du RER - d'André Téchiné - 2009 -.avi</td></tr>
+    <tr><td>La Folie Des Hommes - by Daniel.AVI</td></tr>
+    <tr><td>La journée de la jupe - Adjani - Arte 19-03-09.avi</td></tr>
+    <tr><td>LA MECANIQUE DES FEMMES French DVDRip XviD[cool68].avi</td></tr>
+    <tr><td>La Veritable Histoire Du Chat Botte.Rapax-249.Explicit-Team.avi</td></tr>
+    <tr><td>La.Bande.A.Baader.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>La.Belle.Personne.FRENCH.DVDRip.XviD-ZANBiC.avi</td></tr>
+    <tr><td>La.Foret.De.Miyori.2009.FRENCH.DVDRiP.XViD-RLD.avi</td></tr>
+    <tr><td>LA.GORGE.DU.DIABLE.(2002).Vraie.VF.Divx6.French.DVDRip.ARLBOUFFIARD.avi</td></tr>
+    <tr><td>La.Planete.Blanche.avi</td></tr>
+    <tr><td>La.Porte.Des.Secrets.FRECNH.DVDRiP.XViD-NYJ.avi</td></tr>
+    <tr><td>La.Premiere.Etoile.FRENCH.DVDRip.XviD-NERD.By.YATTA69.avi</td></tr>
+    <tr><td>La.Sicilienne.2010.FRENCH.DVDRIP.XVID-BN.DIV.avi</td></tr>
+    <tr><td>La.Tour.Au.Dela.Des.Nuages.2009.FRENCH.DVDRiP.XViD-RLD.avi</td></tr>
+    <tr><td>La.Tres.Tres.Grande.Entreprise.FRENCH.DVDRip.Xvid-THEWARRIOR777.avi</td></tr>
+    <tr><td>Lascars.FRENCH.DVDRip.XviD-UNSKiLLED.avi</td></tr>
+    <tr><td>Last.Chance.Harvey.FRENCH.DVDRiP.XViD-FULL.avi</td></tr>
+    <tr><td>La_7eme_compagnie_au_clair_de_lune.AVI</td></tr>
+    <tr><td>La_chute_du_faucon_noir.avi</td></tr>
+    <tr><td>Là-haut.avi</td></tr>
+    <tr><td>Le dernier des mohicans.avi</td></tr>
+    <tr><td>Le Magnifique 1973.DVDrip.avi</td></tr>
+    <tr><td>Le Mal A Un Nouveau Numero French Dvdrip Divx-Xgz-Ggt(1).avi</td></tr>
+    <tr><td>le petit monde de don camillo.avi</td></tr>
+    <tr><td>Le.Code.A.Change.FRENCH.DVDRiP.XViD-SURViVAL.MZISYS.avi</td></tr>
+    <tr><td>Le.Dernier.Pour.La.Route.FRENCH.DVDRip.avi</td></tr>
+    <tr><td>Le.Fantome.De.Mon.Ex.Fiancee.TRUEFRENCH.DVDRIP.XVID-SYR.avi</td></tr>
+    <tr><td>Le.Herisson.FRENCH.DVDRip.XViD-UNSKiLLED.avi</td></tr>
+    <tr><td>Le.Petit.Nicolas.FRENCH.DVDRiP.XViD-PROD.avi</td></tr>
+    <tr><td>Le.Peuple.des.Tenebres.(XviD.FR.DVDRip).avi</td></tr>
+    <tr><td>Le.Premier.Jour.Du.Reste.De.Ta.Vie.FRENCH.DVDRiP.XViD-NTK.avi</td></tr>
+    <tr><td>Le.Roi.De.L.Evasion.FRENCH.DVDRip.XviD-UNSKiLLED.avi</td></tr>
+    <tr><td>Le.Royaume.Des.Chats.FRENCH.DVDRip.XViD-SESSiON.avi</td></tr>
+    <tr><td>Le.Vol.du.Phoenix By MouduGaz.avi</td></tr>
+    <tr><td>Legally.Blondes.2009.FRENCH.DVDRip.Xvid-VeLL.avi</td></tr>
+    <tr><td>Les .Charlots. Le .Grand .Bazar. Divx.avi</td></tr>
+    <tr><td>les douzes travaux.avi</td></tr>
+    <tr><td>Les larmes du soleil.avi</td></tr>
+    <tr><td>Les Vacances de Mr Bean.DVDRiP.AC3.VF5.1-LYD.avi</td></tr>
+    <tr><td>Les Valeurs De La Famille Addams.avi</td></tr>
+    <tr><td>les valseuses-xvid -sgc.avi</td></tr>
+    <tr><td>Les.Bureaux.De.Dieu.FRENCH.DVDRip.REPACK.1CD.XviD-LECHTI.avi</td></tr>
+    <tr><td>Les.Grandes.Personnes.FRENCH.DVDRip.XviD-NERD.avi</td></tr>
+    <tr><td>LE_MOUTON_A_5_PATTES.avi</td></tr>
+    <tr><td>Love.Happens.French.Dvdrip.Xvid-LECHTI.avi</td></tr>
+    <tr><td>Lucky.Girl.FRENCH.DVDRiP.XViD-Watchmen.avi</td></tr>
+    <tr><td>L_Iceberg.avi</td></tr>
+    <tr><td>Madhouse.LIMiTED.FRENCH.DVDRiP.XViD-CHOCAPiC.avi</td></tr>
+    <tr><td>mariage.chez.les.bodins.FRENCH.DVDRiP.XviD.avi</td></tr>
+    <tr><td>Marie.And.Bruce.2004.FRENCH.DVDRiP.XviD-BiGHiT.avi</td></tr>
+    <tr><td>Marius.avi</td></tr>
+    <tr><td>Marley.And.Me.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>mes amours mes amis.avi</td></tr>
+    <tr><td>Mes.Stars.Et.Moi.FRENCH.DVDRiP.XViD-NTK.avi</td></tr>
+    <tr><td>Miami Vice.avi</td></tr>
+    <tr><td>Momentum.FR.By.réZO.avi</td></tr>
+    <tr><td>Mon petit doigt m'a dit.avi</td></tr>
+    <tr><td>Mon.Vrai.Pere.Et.Moi.2009.FRENCH.DVDRIP.XVID-BN.DIV.MZISYS.avi</td></tr>
+    <tr><td>Mum.And.Dad.2010.UNRATED FRENCH.DVDRiP.XViD-ARTEFAC.avi</td></tr>
+    <tr><td>Murphy.s.Law.1986.FRENCH.DVDRiP.AC3.XViD-SiiX.avi</td></tr>
+    <tr><td>Musee.Haut.Musee.Bas.FRENCH.DVDRip.XviD-UNSKiLLED.avi</td></tr>
+    <tr><td>My.Life.in.Ruins.FRENCH.DVDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>Narc.DVDRiP.XViD-Ulysse.avi</td></tr>
+    <tr><td>Natural.City.FRENCH.DVDRiP.XViD.aMSTERDAM.avi</td></tr>
+    <tr><td>New.Wave.FRENCH.DVDRiP.XViD-THEWARRIOR777.avi</td></tr>
+    <tr><td>No.Blood.No.Tears.FRENCH.READ.NFO.DVDRiP.XViD-RLZ-GGT.avi</td></tr>
+    <tr><td>Notre histoire - de Bertrand Blier, avec Nathalie Baye, Alain Delon (1984).avi</td></tr>
+    <tr><td>OSS 117 Rio Ne Repond Plus.avi</td></tr>
+    <tr><td>Paul.Blart.Mall.Cop.FRENCH.DVDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>Peindre Ou Faire L'Amour Fr DvdRip Xvid.avi</td></tr>
+    <tr><td>PHANTOMS.DVDRIP.FR.(488.x.280).DivX.par.ToBoZ.avi</td></tr>
+    <tr><td>Pretty Woman.DVDRip.avi</td></tr>
+    <tr><td>Problem.Child.1990.FRENCH.DVDRip.Xvid-VeLL.avi</td></tr>
+    <tr><td>Problem.Child.2.1991.FRENCH.DVDRiP.XviD-VeLL.avi</td></tr>
+    <tr><td>Quelque.Chose.A.Te.Dire.FRENCH.DVDRiP.XViD-AYMO.avi</td></tr>
+    <tr><td>Rasta Rocket inuit.avi</td></tr>
+    <tr><td>ratatouille.avi</td></tr>
+    <tr><td>Red.Eye.FRENCH.DVDRip.XViD.avi</td></tr>
+    <tr><td>Rendez.Vous.Avec.Une.Star.FRENCH.DVDRiP.XViD-iPS.avi</td></tr>
+    <tr><td>Ridicule [DVDRiP].avi</td></tr>
+    <tr><td>Rien.De.Personnel.FRENCH.DVDRip.XviD-AYMO.avi</td></tr>
+    <tr><td>Righteous.Kill.TRUEFRENCH.DVDRip.XviD-CINEBANK.avi</td></tr>
+    <tr><td>Saints Martyrs des Damnes.FRENCH.DVDRiP.XviD.AC3-lefbruno.avi</td></tr>
+    <tr><td>Secret.Defense.FRENCH.DVDRip.XviD-ZANBiC.avi</td></tr>
+    <tr><td>Senechal_le_magnifique.avi</td></tr>
+    <tr><td>Serveuses.Demandees.LiMiTED.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>Sherlock.Holmes.FRENCH.DVDSCR.avi</td></tr>
+    <tr><td>Slumdog.Millionaire.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>Soie (Silk) French DVDRip XviD [cool68].avi</td></tr>
+    <tr><td>Sos.Fantomes.1984.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>Star.Trek.1.Le.Film.FRENCH.DVDRiP.XViD-SPOCK.avi</td></tr>
+    <tr><td>Star.Trek.2.La.Colere.de.Khan.FRENCH.DVDRiP.XViD-SPOCK.avi</td></tr>
+    <tr><td>Star.Trek.3.A.La.Recherche.De.Spock.FRENCH.DVDRiP.DiVX-SPOCK.avi</td></tr>
+    <tr><td>Star.Trek.4.Retour.Sur.Terre.FRENCH.DVDRiP.XViD-SPOCK.avi</td></tr>
+    <tr><td>Star.Trek.5.L.Ultime.Frontiere.FRENCH.DVDRiP.XViD-SPOCK.avi</td></tr>
+    <tr><td>Star.Trek.6.Terre.Inconnue.FRENCH.DVDRiP.DiVX-SPOCK.avi</td></tr>
+    <tr><td>Star.Trek.7.Generations.FRENCH.DVDRiP.XVID-SPOCK.avi</td></tr>
+    <tr><td>Stella.FRENCH.DVDRip.XviD-NTK.avi</td></tr>
+    <tr><td>Super.Papa.DVDRip.FR.DivX.6.(2007).VERSION.FR.NON.CANADIENNE.avi</td></tr>
+    <tr><td>Tenue Correcte Exigée.avi</td></tr>
+    <tr><td>Terminator 3 french dvdrip [evanetlola].avi</td></tr>
+    <tr><td>The Punisher.avi</td></tr>
+    <tr><td>The Score - DVDRip - French - XViD.avi</td></tr>
+    <tr><td>The sky crawlers.avi</td></tr>
+    <tr><td>The.Curious.Case.Of.Benjamin.Button.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>The.Escapist.2008.LiMiTED.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>The.Informant.FRENCH.REPACK.1CD.BDRiP.XviD-ATeam.avi</td></tr>
+    <tr><td>The.Life.Before.Her.Eyes.FRENCH.DVDRip.XviD-NTK.avi</td></tr>
+    <tr><td>The.Other.Man.LIMITED.FRENCH.DVDRIP.XVID-AYMO.avi</td></tr>
+    <tr><td>The.Proposal.FRENCH.REPACK.1CD.DVDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>The.Secret.Life.Of.Words.FRENCH.DVDRip.XviD.avi</td></tr>
+    <tr><td>The.Sentinel.2005.FRENCH.DVDRiP.XviD.avi</td></tr>
+    <tr><td>The.Tiger Blade.French.DVDrip.HappySpanky.avi</td></tr>
+    <tr><td>The.Time.Travelers.Wife.FRENCH.BDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>There Will Be Blood .avi</td></tr>
+    <tr><td>Thomas est Amoureux .avi</td></tr>
+    <tr><td>THR3E.2010.TRUEFRENCH.DVDRiP.XViD-ARTEFAC.avi</td></tr>
+    <tr><td>Trading.Places.1983.FRENCH.DVDRiP.XviD-NoTaG.avi</td></tr>
+    <tr><td>Tricheuse.By simspel.avi</td></tr>
+    <tr><td>Troie.xvid.avi</td></tr>
+    <tr><td>Tron_DVDRIP_by_Elvout.avi</td></tr>
+    <tr><td>Troupe.D.Elite.FRENCH.DVDRiP.REPACK.1CD.XViD-STS.avi</td></tr>
+    <tr><td>Two.Lovers.LiMiTED.FRENCH.BDRiP.XViD-SURViVAL.avi</td></tr>
+    <tr><td>Un après-midi de chien.avi</td></tr>
+    <tr><td>Un Duplex Pour Trois DVDRiP DiVX.avi</td></tr>
+    <tr><td>Un éléphant ça trompe énormément.avi</td></tr>
+    <tr><td>Undead.(XviD.FR.DvDRip).By.RLZ-GGT.-.DvDRip.Fr.St.avi</td></tr>
+    <tr><td>Vengeance.Secrete.Divx.French.avi</td></tr>
+    <tr><td>Vertige.avi</td></tr>
+    <tr><td>Very bad trip DVDRIP.avi</td></tr>
+    <tr><td>Vexille.2077.FRENCH.DVDRIP.animation.avi</td></tr>
+    <tr><td>Vikings.2009.TRUEFRENCH.DVDRIP.XVID-BN.DIV.MZISYS.avi</td></tr>
+    <tr><td>Volcano_FRENCH.DVDRiP.XViD-TuX.avi</td></tr>
+    <tr><td>Volt.Star.Malgre.Lui.FRENCH.DVDRiP.XviD-ULTRASON.avi</td></tr>
+    <tr><td>Warwolves.2010.TRUEFRENCH.DVDRiP.XViD-ARTEFAC.avi</td></tr>
+    <tr><td>Working Girl - Sigourney Weaver Melanie Griffith  Harrison Ford.avi</td></tr>
+    <tr><td>Year.One.UNRATED.FRENCH.DVDRip.XViD-SURViVAL.avi</td></tr>
+
+  </table>
+</body>
+</html>
