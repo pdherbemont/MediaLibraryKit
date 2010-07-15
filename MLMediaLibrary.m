@@ -26,6 +26,7 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 #endif
 - (NSManagedObjectContext *)managedObjectContext;
 - (void)startUpdateDB;
+- (NSString *)databaseFolderPath;
 @end
 
 @implementation MLMediaLibrary
@@ -153,9 +154,10 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 - (Show *)tvShowWithName:(NSString *)name
 {
     NSFetchRequest *request = [self fetchRequestForEntity:@"Show"];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"name LIKE %@", name]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"name == %@", name]];
 
     NSArray *dbResults = [[self managedObjectContext] executeFetchRequest:request error:nil];
+    NSAssert(dbResults, @"Can't execute fetch request");
 
     if ([dbResults count] <= 0)
         return nil;
@@ -343,6 +345,9 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     episode.shouldBeDisplayed = [NSNumber numberWithBool:YES];
 
     [episode addFilesObject:file];
+
+    // The rest of the meta data will be fetched using the Show
+    file.hasFetchedInfo = [NSNumber numberWithBool:YES];
 }
 
 
@@ -370,12 +375,9 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 
 - (void)fetchMetaDataForFile:(File *)file
 {
-    NSNumber *yes = [NSNumber numberWithBool:YES];
-
     NSDictionary *tvShowEpisodeInfo = [MLTitleDecrapifier tvShowEpisodeInfoFromString:file.title];
     if (tvShowEpisodeInfo) {
         [self addTVShowEpisodeWithInfo:tvShowEpisodeInfo andFile:file];
-        file.hasFetchedInfo = yes;
         return;
     }
 
@@ -410,15 +412,17 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 - (void)addFilePath:(NSString *)filePath
 {
     NSLog(@"Adding %@", filePath);
-    NSString *url = [NSURL fileURLWithPath:filePath];
+    NSURL *url = [NSURL fileURLWithPath:filePath];
     NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
     NSString *title = [filePath lastPathComponent];
+#if !TARGET_OS_IPHONE
     NSDate *openedDate = nil; // FIXME kMDItemLastUsedDate
     NSDate *modifiedDate = nil; // FIXME [result valueForAttribute:@"kMDItemFSContentChangeDate"];
+#endif
     NSNumber *size = [attributes objectForKey:NSFileSize]; // FIXME [result valueForAttribute:@"kMDItemFSSize"];
 
     File *file = [self createObjectForEntity:@"File"];
-    file.url = [url description];
+    file.url = [url absoluteString];
 
     // Yes, this is a negative number. VLCTime nicely display negative time
     // with "XX minutes remaining". And we are using this facility.
@@ -431,10 +435,13 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     file.remainingTime = [NSNumber numberWithDouble:0];
     file.unread = yes;
 
+#if !TARGET_OS_IPHONE
     if ([openedDate isGreaterThan:modifiedDate]) {
         file.playCount = [NSNumber numberWithDouble:1];
         file.unread = no;
     }
+#endif
+
     file.title = [MLTitleDecrapifier decrapify:[title stringByDeletingPathExtension]];
 
     if ([size longLongValue] < 150000000) /* 150 MB */
@@ -454,9 +461,10 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     // Prepare a fetch request for all items
     for (NSString *path in filepaths) {
         NSURL *url = [NSURL fileURLWithPath:path];
-        NSString *urlDescription = [url description];
-        [fetchPredicates addObject:[NSPredicate predicateWithFormat:@"url == %@", urlDescription]];
-        [urlToObject setObject:url forKey:urlDescription];
+        NSString *urlString = [url absoluteString];
+        [fetchPredicates addObject:[NSPredicate predicateWithFormat:@"url == %@", urlString]];
+        [urlToObject setObject:path forKey:urlString];
+
     }
 
     NSFetchRequest *request = [self fetchRequestForEntity:@"File"];
@@ -469,10 +477,11 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 
     NSMutableArray *filePathsToAdd = [NSMutableArray arrayWithArray:filepaths];
 
+
     // Remove objects that are already in db.
     for (NSManagedObjectContext *dbResult in dbResults) {
-        NSString *url = [dbResult valueForKey:@"url"];
-        [filePathsToAdd removeObject:[urlToObject objectForKey:url]];
+        NSString *urlString = [dbResult valueForKey:@"url"];
+        [filePathsToAdd removeObject:[urlToObject objectForKey:urlString]];
     }
 
     // Add only the newly added items

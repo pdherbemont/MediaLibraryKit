@@ -35,6 +35,6 @@
 
 //- (id)initWithLibXmlParserContext:(xmlParserCtxtPtr)inContext options:(NSUInteger)inOptions error:(NSError **)outError;
 
-- (NSMutableSet *)nodePool;
+//- (NSMutableSet *)nodePool;
 
 @end

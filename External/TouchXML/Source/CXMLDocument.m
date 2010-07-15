@@ -269,5 +269,5 @@ return result;
 	}
     return(nodePool);
 }
-
+@dynamic nodePool;
 @end

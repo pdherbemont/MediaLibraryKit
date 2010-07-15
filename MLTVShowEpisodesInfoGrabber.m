@@ -12,6 +12,10 @@
 #import "MLURLConnection.h"
 
 @interface MLTVShowEpisodesInfoGrabber ()
+#if !HAVE_BLOCK
+    <MLURLConnectionDelegate>
+#endif
+
 @property (readwrite, retain) NSDictionary *results;
 @property (readwrite, retain) NSArray *episodesResults;
 
