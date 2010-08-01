@@ -50,7 +50,7 @@
 {
     NSString *escapedString = [title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:TMDB_QUERY_SEARCH, TMDB_HOSTNAME, escapedString, TMDB_API_KEY]];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
     [_connection cancel];
     [_connection release];
 
@@ -60,7 +60,9 @@
     // Keep a reference to ourself while we are alive.
     [self retain];
 
-    _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES]; [request release];
+    _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+    NSAssert(_connection, @"Can't create connection");
+    [request release];
 
 }
 
@@ -75,8 +77,12 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    if ([_delegate respondsToSelector:@selector(movieInfoGrabber:didFailWithError:)])
+    NSLog(@"Did Fail %@", _delegate);
+    if ([_delegate respondsToSelector:@selector(movieInfoGrabber:didFailWithError:)]) {
+        NSLog(@"Did Fail Calling %@", _delegate);
+
         [_delegate movieInfoGrabber:self didFailWithError:error];
+    }
 
 #if HAVE_BLOCK
     if (_block) {

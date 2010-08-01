@@ -1,5 +1,5 @@
 //
-//  ShowEpisode.h
+//  MLShowEpisode.h
 //  Lunettes
 //
 //  Created by Pierre d'Herbemont on 5/29/10.
@@ -8,11 +8,18 @@
 
 #import <CoreData/CoreData.h>
 
-@class Show;
+@class MLShow;
 
-@interface ShowEpisode :  NSManagedObject
+@interface MLShowEpisode :  NSManagedObject
 {
 }
+
++ (NSArray *)allEpisodes;
+
+// This will eventually create the show
++ (MLShowEpisode *)episodeWithShow:(id)show episodeNumber:(NSNumber *)episodeNumber seasonNumber:(NSNumber *)seasonNumber createIfNeeded:(BOOL)createIfNeeded;
++ (MLShowEpisode *)episodeWithShowName:(NSString *)showName episodeNumber:(NSNumber *)episodeNumber seasonNumber:(NSNumber *)seasonNumber
+                        createIfNeeded:(BOOL)createIfNeeded wasCreated:(BOOL *)wasCreated;
 
 @property (nonatomic, retain) NSNumber *unread;
 @property (nonatomic, retain) NSString *theTVDBID;
@@ -23,13 +30,13 @@
 @property (nonatomic, retain) NSNumber *lastSyncDate;
 @property (nonatomic, retain) NSString *artworkURL;
 @property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) Show *show;
+@property (nonatomic, retain) MLShow *show;
 @property (nonatomic, retain) NSSet *files;
 
 @end
 
 
-@interface ShowEpisode (CoreDataGeneratedAccessors)
+@interface MLShowEpisode (CoreDataGeneratedAccessors)
 - (void)addFilesObject:(NSManagedObject *)value;
 - (void)removeFilesObject:(NSManagedObject *)value;
 - (void)addFiles:(NSSet *)value;

@@ -9,6 +9,7 @@
 #import "MLTVShowInfoGrabber.h"
 #import "TheTVDBGrabber.h"
 #import "MLURLConnection.h"
+#import "NSXMLNode_Additions.h"
 
 @interface MLTVShowInfoGrabber ()
 #if !HAVE_BLOCK
@@ -143,7 +144,7 @@ static NSNumber *gServerTime = nil;
         // FIXME: Have a default for that?
         NSDate *oneHourAgo = [NSDate dateWithTimeIntervalSinceNow:5 * 60 /* Every 5 mins */];
         if ([oneHourAgo earlierDate:gLastFetch] == gLastFetch) {
-            [_delegate tvShowInfoGrabberDidFetchServerTime:self];
+            block(gServerTime);
             return;
         }
     }
@@ -157,14 +158,13 @@ static NSNumber *gServerTime = nil;
         }
         [gServerTime release];
         [gLastFetch release];
-        NSData *data = connection.data;
         NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithData:connection.data options:0 error:nil];
         NSNumber *serverTime = [[xmlDoc rootElement] numberValueForXPath:@"./Time"];
 
         gServerTime = [serverTime retain];
         gLastFetch = [[NSDate dateWithTimeIntervalSinceNow:0] retain];
 
-        [_delegate tvShowInfoGrabberDidFetchServerTime:self];
+        block(gServerTime);
     }];
 }
 #endif

@@ -1,5 +1,5 @@
 //
-//  Show.h
+//  MLShow.h
 //  Lunettes
 //
 //  Created by Pierre d'Herbemont on 5/28/10.
@@ -9,9 +9,12 @@
 #import <CoreData/CoreData.h>
 
 
-@interface Show :  NSManagedObject
+@interface MLShow :  NSManagedObject
 {
 }
+
++ (NSArray *)allShows;
++ (MLShow *)showWithName:(NSString *)name;
 
 @property (nonatomic, retain) NSString *theTVDBID;
 @property (nonatomic, retain) NSString *shortSummary;
@@ -25,7 +28,7 @@
 @end
 
 
-@interface Show (CoreDataGeneratedAccessors)
+@interface MLShow   (CoreDataGeneratedAccessors)
 - (void)addEpisodesObject:(NSManagedObject *)value;
 - (void)removeEpisodesObject:(NSManagedObject *)value;
 - (void)addEpisodes:(NSSet *)value;

@@ -1,16 +1,16 @@
-// 
-//  Label.m
+//
+//  MLLabel.m
 //  Lunettes
 //
 //  Created by Pierre d'Herbemont on 5/29/10.
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "Label.h"
+#import "MLLabel.h"
 
-#import "File.h"
+#import "MLFile.h"
 
-@implementation Label 
+@implementation MLLabel
 
 @dynamic name;
 @dynamic files;

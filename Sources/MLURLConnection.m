@@ -11,7 +11,7 @@
 #if HAVE_BLOCK
 @interface MLURLConnection ()
 
-- (void)loadURL:(NSURL *)url andPerformBlock:(void (^)(VLCURLConnection *connection, NSError *error))block;
+- (void)loadURL:(NSURL *)url andPerformBlock:(void (^)(MLURLConnection *connection, NSError *error))block;
 
 @end
 #endif
@@ -22,7 +22,7 @@
 @synthesize userObject=_userObject;
 
 #if HAVE_BLOCK
-+ (id)runConnectionWithURL:(NSURL *)url andBlock:(void (^)(VLCURLConnection *connection, NSError *error))block
++ (id)runConnectionWithURL:(NSURL *)url andBlock:(void (^)(MLURLConnection *connection, NSError *error))block
 {
     id obj = [[[[self class] alloc] init] autorelease];
     [obj loadURL:url andPerformBlock:block];

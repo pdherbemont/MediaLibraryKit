@@ -10,6 +10,7 @@
 
 #import "TheTVDBGrabber.h"
 #import "MLURLConnection.h"
+#import "NSXMLNode_Additions.h"
 
 @interface MLTVShowEpisodesInfoGrabber ()
 #if !HAVE_BLOCK
@@ -31,13 +32,14 @@
 #endif
 - (void)dealloc
 {
-    [_userData release];
     [_connection release];
     [_results release];
     [_episodesResults release];
 #if HAVE_BLOCK
     if (_block)
         Block_release(_block);
+#else
+    [_userData release];
 #endif
     [super dealloc];
 }

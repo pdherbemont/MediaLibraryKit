@@ -1,5 +1,5 @@
 //
-//  Label.h
+//  MLLabel.h
 //  Lunettes
 //
 //  Created by Pierre d'Herbemont on 5/29/10.
@@ -8,9 +8,9 @@
 
 #import <CoreData/CoreData.h>
 
-@class File;
+@class MLFile;
 
-@interface Label :  NSManagedObject  
+@interface MLLabel :  NSManagedObject
 {
 }
 
@@ -20,9 +20,9 @@
 @end
 
 
-@interface Label (CoreDataGeneratedAccessors)
-- (void)addFilesObject:(File *)value;
-- (void)removeFilesObject:(File *)value;
+@interface MLLabel (CoreDataGeneratedAccessors)
+- (void)addFilesObject:(MLFile *)value;
+- (void)removeFilesObject:(MLFile *)value;
 - (void)addFiles:(NSSet *)value;
 - (void)removeFiles:(NSSet *)value;
 

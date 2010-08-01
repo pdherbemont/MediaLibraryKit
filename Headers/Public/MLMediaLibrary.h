@@ -16,4 +16,12 @@
 + (id)sharedMediaLibrary;
 
 - (void)addFilePaths:(NSArray *)filepaths;
+
+// May be internal
+- (NSFetchRequest *)fetchRequestForEntity:(NSString *)entity;
+- (id)createObjectForEntity:(NSString *)entity;
+
+- (void)save;
+- (void)libraryDidDisappear;
+- (void)libraryDidAppear;
 @end

@@ -9,12 +9,15 @@
 #import <Foundation/Foundation.h>
 
 @protocol MLURLConnectionDelegate;
-
+@class MLURLConnection;
 @interface MLURLConnection : NSObject {
     NSMutableData *_data;
     NSURLConnection *_connection;
     id<MLURLConnectionDelegate> _delegate;
     id _userObject;
+#if HAVE_BLOCK
+    void (^_block)(MLURLConnection *connection, NSError *error);
+#endif
 }
 
 @property (readonly, retain) NSData *data;

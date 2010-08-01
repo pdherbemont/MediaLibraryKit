@@ -44,9 +44,8 @@
 
 
 @protocol MLTVShowInfoGrabberDelegate <NSObject>
-@optional
-- (void)tvShowInfoGrabber:(MLTVShowInfoGrabber *)grabber didFailWithError:(NSError *)error;
 @required
+- (void)tvShowInfoGrabber:(MLTVShowInfoGrabber *)grabber didFailWithError:(NSError *)error;
 - (void)tvShowInfoGrabberDidFinishGrabbing:(MLTVShowInfoGrabber *)grabber;
 - (void)tvShowInfoGrabberDidFetchServerTime:(MLTVShowInfoGrabber *)grabber;
 - (void)tvShowInfoGrabber:(MLTVShowInfoGrabber *)grabber didFetchUpdates:(NSArray *)updates;
