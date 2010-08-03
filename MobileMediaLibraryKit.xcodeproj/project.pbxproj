@@ -31,7 +31,6 @@
 		6320368011F76EA9002861C2 /* NSXMLNode_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365E11F76EA9002861C2 /* NSXMLNode_Additions.m */; };
 		63C092E911F77CF200A824BC /* MediaLibrary.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */; };
 		63C093DB11F78D8100A824BC /* MLThumbnailerQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */; };
-		7A37ED0B12089E4A00D41964 /* libMobileVLCKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A37ED0A12089E4A00D41964 /* libMobileVLCKit.a */; };
 		7A37EDB71208A1F000D41964 /* MLShowEpisode.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 63C0920A11F776D300A824BC /* MLShowEpisode.h */; };
 		7A37EDB81208A1F000D41964 /* MLFile.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320368E11F76EC3002861C2 /* MLFile.h */; };
 		7A37EDB91208A1F000D41964 /* MLLabel.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320368F11F76EC3002861C2 /* MLLabel.h */; };
@@ -139,7 +138,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
-				7A37ED0B12089E4A00D41964 /* libMobileVLCKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
