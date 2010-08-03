@@ -7,29 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6320365F11F76EA9002861C2 /* CXMLDocument_CreationExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320363B11F76EA9002861C2 /* CXMLDocument_CreationExtensions.h */; };
 		6320366011F76EA9002861C2 /* CXMLDocument_CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320363C11F76EA9002861C2 /* CXMLDocument_CreationExtensions.m */; };
-		6320366111F76EA9002861C2 /* CXMLNode_CreationExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320363D11F76EA9002861C2 /* CXMLNode_CreationExtensions.h */; };
 		6320366211F76EA9002861C2 /* CXMLNode_CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320363E11F76EA9002861C2 /* CXMLNode_CreationExtensions.m */; };
-		6320366311F76EA9002861C2 /* CXMLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320363F11F76EA9002861C2 /* CXMLDocument.h */; };
 		6320366411F76EA9002861C2 /* CXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364011F76EA9002861C2 /* CXMLDocument.m */; };
-		6320366511F76EA9002861C2 /* CXMLDocument_PrivateExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320364111F76EA9002861C2 /* CXMLDocument_PrivateExtensions.h */; };
 		6320366611F76EA9002861C2 /* CXMLDocument_PrivateExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364211F76EA9002861C2 /* CXMLDocument_PrivateExtensions.m */; };
-		6320366711F76EA9002861C2 /* CXMLElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320364311F76EA9002861C2 /* CXMLElement.h */; };
 		6320366811F76EA9002861C2 /* CXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364411F76EA9002861C2 /* CXMLElement.m */; };
-		6320366911F76EA9002861C2 /* CXMLElement_CreationExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320364511F76EA9002861C2 /* CXMLElement_CreationExtensions.h */; };
 		6320366A11F76EA9002861C2 /* CXMLElement_CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364611F76EA9002861C2 /* CXMLElement_CreationExtensions.m */; };
-		6320366B11F76EA9002861C2 /* CXMLElement_ElementTreeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320364711F76EA9002861C2 /* CXMLElement_ElementTreeExtensions.h */; };
 		6320366C11F76EA9002861C2 /* CXMLElement_ElementTreeExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364811F76EA9002861C2 /* CXMLElement_ElementTreeExtensions.m */; };
-		6320366D11F76EA9002861C2 /* CXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320364911F76EA9002861C2 /* CXMLNode.h */; };
 		6320366E11F76EA9002861C2 /* CXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364A11F76EA9002861C2 /* CXMLNode.m */; };
-		6320366F11F76EA9002861C2 /* CXMLNode_PrivateExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320364B11F76EA9002861C2 /* CXMLNode_PrivateExtensions.h */; };
 		6320367011F76EA9002861C2 /* CXMLNode_PrivateExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364C11F76EA9002861C2 /* CXMLNode_PrivateExtensions.m */; };
-		6320367111F76EA9002861C2 /* CXMLNode_XPathExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320364D11F76EA9002861C2 /* CXMLNode_XPathExtensions.h */; };
 		6320367211F76EA9002861C2 /* CXMLNode_XPathExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320364E11F76EA9002861C2 /* CXMLNode_XPathExtensions.m */; };
-		6320367311F76EA9002861C2 /* CTidy.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320365011F76EA9002861C2 /* CTidy.h */; };
 		6320367411F76EA9002861C2 /* CTidy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365111F76EA9002861C2 /* CTidy.m */; };
-		6320367511F76EA9002861C2 /* TouchXML.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320365211F76EA9002861C2 /* TouchXML.h */; };
 		6320367611F76EA9002861C2 /* MLFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365411F76EA9002861C2 /* MLFile.m */; };
 		6320367711F76EA9002861C2 /* MLLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365511F76EA9002861C2 /* MLLabel.m */; };
 		6320367811F76EA9002861C2 /* MLMediaLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365611F76EA9002861C2 /* MLMediaLibrary.m */; };
@@ -41,31 +29,14 @@
 		6320367E11F76EA9002861C2 /* MLTVShowInfoGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365C11F76EA9002861C2 /* MLTVShowInfoGrabber.m */; };
 		6320367F11F76EA9002861C2 /* MLURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365D11F76EA9002861C2 /* MLURLConnection.m */; };
 		6320368011F76EA9002861C2 /* NSXMLNode_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365E11F76EA9002861C2 /* NSXMLNode_Additions.m */; };
-		6320369211F76EC3002861C2 /* MLMovieInfoGrabber.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368511F76EC3002861C2 /* MLMovieInfoGrabber.h */; };
-		6320369411F76EC3002861C2 /* MLTitleDecrapifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368711F76EC3002861C2 /* MLTitleDecrapifier.h */; };
-		6320369511F76EC3002861C2 /* MLTVShowEpisodesInfoGrabber.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368811F76EC3002861C2 /* MLTVShowEpisodesInfoGrabber.h */; };
-		6320369611F76EC3002861C2 /* MLTVShowInfoGrabber.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368911F76EC3002861C2 /* MLTVShowInfoGrabber.h */; };
-		6320369711F76EC3002861C2 /* MLURLConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368A11F76EC3002861C2 /* MLURLConnection.h */; };
-		6320369811F76EC3002861C2 /* NSXMLNode_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368B11F76EC3002861C2 /* NSXMLNode_Additions.h */; };
-		6320369911F76EC3002861C2 /* TheTVDBGrabber.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368C11F76EC3002861C2 /* TheTVDBGrabber.h */; };
-		6320369A11F76EC3002861C2 /* MLFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368E11F76EC3002861C2 /* MLFile.h */; };
-		6320369B11F76EC3002861C2 /* MLLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320368F11F76EC3002861C2 /* MLLabel.h */; };
-		6320369C11F76EC3002861C2 /* MLMediaLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320369011F76EC3002861C2 /* MLMediaLibrary.h */; };
-		6320369D11F76EC3002861C2 /* MLShow.h in Headers */ = {isa = PBXBuildFile; fileRef = 6320369111F76EC3002861C2 /* MLShow.h */; };
-		63C0920B11F776D300A824BC /* MLShowEpisode.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C0920A11F776D300A824BC /* MLShowEpisode.h */; };
 		63C092E911F77CF200A824BC /* MediaLibrary.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */; };
-		63C093DA11F78D8100A824BC /* MLThumbnailerQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093D811F78D8100A824BC /* MLThumbnailerQueue.h */; };
 		63C093DB11F78D8100A824BC /* MLThumbnailerQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */; };
-		63C093FF11F78E5500A824BC /* MobileVLCKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093F611F78E5500A824BC /* MobileVLCKit.h */; };
-		63C0940011F78E5500A824BC /* VLCAudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093F711F78E5500A824BC /* VLCAudio.h */; };
-		63C0940111F78E5500A824BC /* VLCLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093F811F78E5500A824BC /* VLCLibrary.h */; };
-		63C0940211F78E5500A824BC /* VLCMedia.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093F911F78E5500A824BC /* VLCMedia.h */; };
-		63C0940311F78E5500A824BC /* VLCMediaDiscoverer.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093FA11F78E5500A824BC /* VLCMediaDiscoverer.h */; };
-		63C0940411F78E5500A824BC /* VLCMediaList.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093FB11F78E5500A824BC /* VLCMediaList.h */; };
-		63C0940511F78E5500A824BC /* VLCMediaPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093FC11F78E5500A824BC /* VLCMediaPlayer.h */; };
-		63C0940611F78E5500A824BC /* VLCMediaThumbnailer.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093FD11F78E5500A824BC /* VLCMediaThumbnailer.h */; };
-		63C0940711F78E5500A824BC /* VLCTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 63C093FE11F78E5500A824BC /* VLCTime.h */; };
-		AA747D9F0F9514B9006C5449 /* MobileMediaLibraryKit_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MobileMediaLibraryKit_Prefix.pch */; };
+		7A37ED0B12089E4A00D41964 /* libMobileVLCKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A37ED0A12089E4A00D41964 /* libMobileVLCKit.a */; };
+		7A37EDB71208A1F000D41964 /* MLShowEpisode.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 63C0920A11F776D300A824BC /* MLShowEpisode.h */; };
+		7A37EDB81208A1F000D41964 /* MLFile.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320368E11F76EC3002861C2 /* MLFile.h */; };
+		7A37EDB91208A1F000D41964 /* MLLabel.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320368F11F76EC3002861C2 /* MLLabel.h */; };
+		7A37EDBA1208A1F000D41964 /* MLMediaLibrary.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320369011F76EC3002861C2 /* MLMediaLibrary.h */; };
+		7A37EDBB1208A1F000D41964 /* MLShow.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320369111F76EC3002861C2 /* MLShow.h */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -76,7 +47,11 @@
 			dstPath = include/MediaLibraryKit;
 			dstSubfolderSpec = 16;
 			files = (
-				7A840DDF11EFB2DA00EAE5BE /* MLMediaLibrary.h in Copy Public headers */,
+				7A37EDB71208A1F000D41964 /* MLShowEpisode.h in Copy Public headers */,
+				7A37EDB81208A1F000D41964 /* MLFile.h in Copy Public headers */,
+				7A37EDB91208A1F000D41964 /* MLLabel.h in Copy Public headers */,
+				7A37EDBA1208A1F000D41964 /* MLMediaLibrary.h in Copy Public headers */,
+				7A37EDBB1208A1F000D41964 /* MLShow.h in Copy Public headers */,
 			);
 			name = "Copy Public headers";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,7 +62,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				7A840DE111EFB2EE00EAE5BE /* MediaLibrary.xcdatamodel in Copy Resource files */,
 			);
 			name = "Copy Resource files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -144,15 +118,16 @@
 		63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = MediaLibrary.xcdatamodel; sourceTree = SOURCE_ROOT; };
 		63C093D811F78D8100A824BC /* MLThumbnailerQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLThumbnailerQueue.h; sourceTree = "<group>"; };
 		63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLThumbnailerQueue.m; sourceTree = "<group>"; };
-		63C093F611F78E5500A824BC /* MobileVLCKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileVLCKit.h; sourceTree = "<group>"; };
-		63C093F711F78E5500A824BC /* VLCAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCAudio.h; sourceTree = "<group>"; };
-		63C093F811F78E5500A824BC /* VLCLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCLibrary.h; sourceTree = "<group>"; };
-		63C093F911F78E5500A824BC /* VLCMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMedia.h; sourceTree = "<group>"; };
-		63C093FA11F78E5500A824BC /* VLCMediaDiscoverer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaDiscoverer.h; sourceTree = "<group>"; };
-		63C093FB11F78E5500A824BC /* VLCMediaList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaList.h; sourceTree = "<group>"; };
-		63C093FC11F78E5500A824BC /* VLCMediaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaPlayer.h; sourceTree = "<group>"; };
-		63C093FD11F78E5500A824BC /* VLCMediaThumbnailer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaThumbnailer.h; sourceTree = "<group>"; };
-		63C093FE11F78E5500A824BC /* VLCTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCTime.h; sourceTree = "<group>"; };
+		7A37ED0112089E4A00D41964 /* MobileVLCKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileVLCKit.h; sourceTree = "<group>"; };
+		7A37ED0212089E4A00D41964 /* VLCAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCAudio.h; sourceTree = "<group>"; };
+		7A37ED0312089E4A00D41964 /* VLCLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCLibrary.h; sourceTree = "<group>"; };
+		7A37ED0412089E4A00D41964 /* VLCMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMedia.h; sourceTree = "<group>"; };
+		7A37ED0512089E4A00D41964 /* VLCMediaDiscoverer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaDiscoverer.h; sourceTree = "<group>"; };
+		7A37ED0612089E4A00D41964 /* VLCMediaList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaList.h; sourceTree = "<group>"; };
+		7A37ED0712089E4A00D41964 /* VLCMediaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaPlayer.h; sourceTree = "<group>"; };
+		7A37ED0812089E4A00D41964 /* VLCMediaThumbnailer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCMediaThumbnailer.h; sourceTree = "<group>"; };
+		7A37ED0912089E4A00D41964 /* VLCTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCTime.h; sourceTree = "<group>"; };
+		7A37ED0A12089E4A00D41964 /* libMobileVLCKit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobileVLCKit.a; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* MobileMediaLibraryKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileMediaLibraryKit_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libMobileMediaLibraryKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMobileMediaLibraryKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +139,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
+				7A37ED0B12089E4A00D41964 /* libMobileVLCKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +186,7 @@
 		6320363711F76EA9002861C2 /* External */ = {
 			isa = PBXGroup;
 			children = (
-				63C093F211F78E1B00A824BC /* MobileVLCKit */,
+				7A37ECFE12089E4A00D41964 /* MobileVLCKit */,
 				6320363811F76EA9002861C2 /* TouchXML */,
 			);
 			path = External;
@@ -326,84 +302,40 @@
 			path = Public;
 			sourceTree = "<group>";
 		};
-		63C093F211F78E1B00A824BC /* MobileVLCKit */ = {
+		7A37ECFE12089E4A00D41964 /* MobileVLCKit */ = {
 			isa = PBXGroup;
 			children = (
-				63C093F411F78E5500A824BC /* include */,
+				7A37ECFF12089E4A00D41964 /* include */,
+				7A37ED0A12089E4A00D41964 /* libMobileVLCKit.a */,
 			);
 			path = MobileVLCKit;
 			sourceTree = "<group>";
 		};
-		63C093F411F78E5500A824BC /* include */ = {
+		7A37ECFF12089E4A00D41964 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				63C093F511F78E5500A824BC /* MobileVLCKit */,
+				7A37ED0012089E4A00D41964 /* MobileVLCKit */,
 			);
-			name = include;
-			path = "../../build/Debug-iphonesimulator/include";
-			sourceTree = SOURCE_ROOT;
+			path = include;
+			sourceTree = "<group>";
 		};
-		63C093F511F78E5500A824BC /* MobileVLCKit */ = {
+		7A37ED0012089E4A00D41964 /* MobileVLCKit */ = {
 			isa = PBXGroup;
 			children = (
-				63C093F611F78E5500A824BC /* MobileVLCKit.h */,
-				63C093F711F78E5500A824BC /* VLCAudio.h */,
-				63C093F811F78E5500A824BC /* VLCLibrary.h */,
-				63C093F911F78E5500A824BC /* VLCMedia.h */,
-				63C093FA11F78E5500A824BC /* VLCMediaDiscoverer.h */,
-				63C093FB11F78E5500A824BC /* VLCMediaList.h */,
-				63C093FC11F78E5500A824BC /* VLCMediaPlayer.h */,
-				63C093FD11F78E5500A824BC /* VLCMediaThumbnailer.h */,
-				63C093FE11F78E5500A824BC /* VLCTime.h */,
+				7A37ED0112089E4A00D41964 /* MobileVLCKit.h */,
+				7A37ED0212089E4A00D41964 /* VLCAudio.h */,
+				7A37ED0312089E4A00D41964 /* VLCLibrary.h */,
+				7A37ED0412089E4A00D41964 /* VLCMedia.h */,
+				7A37ED0512089E4A00D41964 /* VLCMediaDiscoverer.h */,
+				7A37ED0612089E4A00D41964 /* VLCMediaList.h */,
+				7A37ED0712089E4A00D41964 /* VLCMediaPlayer.h */,
+				7A37ED0812089E4A00D41964 /* VLCMediaThumbnailer.h */,
+				7A37ED0912089E4A00D41964 /* VLCTime.h */,
 			);
 			path = MobileVLCKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
-
-		D2AAC07A0554694100DB518D /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AA747D9F0F9514B9006C5449 /* MobileMediaLibraryKit_Prefix.pch in Headers */,
-				6320365F11F76EA9002861C2 /* CXMLDocument_CreationExtensions.h in Headers */,
-				6320366111F76EA9002861C2 /* CXMLNode_CreationExtensions.h in Headers */,
-				6320366311F76EA9002861C2 /* CXMLDocument.h in Headers */,
-				6320366511F76EA9002861C2 /* CXMLDocument_PrivateExtensions.h in Headers */,
-				6320366711F76EA9002861C2 /* CXMLElement.h in Headers */,
-				6320366911F76EA9002861C2 /* CXMLElement_CreationExtensions.h in Headers */,
-				6320366B11F76EA9002861C2 /* CXMLElement_ElementTreeExtensions.h in Headers */,
-				6320366D11F76EA9002861C2 /* CXMLNode.h in Headers */,
-				6320366F11F76EA9002861C2 /* CXMLNode_PrivateExtensions.h in Headers */,
-				6320367111F76EA9002861C2 /* CXMLNode_XPathExtensions.h in Headers */,
-				6320367311F76EA9002861C2 /* CTidy.h in Headers */,
-				6320367511F76EA9002861C2 /* TouchXML.h in Headers */,
-				6320369211F76EC3002861C2 /* MLMovieInfoGrabber.h in Headers */,
-				6320369411F76EC3002861C2 /* MLTitleDecrapifier.h in Headers */,
-				6320369511F76EC3002861C2 /* MLTVShowEpisodesInfoGrabber.h in Headers */,
-				6320369611F76EC3002861C2 /* MLTVShowInfoGrabber.h in Headers */,
-				6320369711F76EC3002861C2 /* MLURLConnection.h in Headers */,
-				6320369811F76EC3002861C2 /* NSXMLNode_Additions.h in Headers */,
-				6320369911F76EC3002861C2 /* TheTVDBGrabber.h in Headers */,
-				6320369A11F76EC3002861C2 /* MLFile.h in Headers */,
-				6320369B11F76EC3002861C2 /* MLLabel.h in Headers */,
-				6320369C11F76EC3002861C2 /* MLMediaLibrary.h in Headers */,
-				6320369D11F76EC3002861C2 /* MLShow.h in Headers */,
-				63C0920B11F776D300A824BC /* MLShowEpisode.h in Headers */,
-				63C093DA11F78D8100A824BC /* MLThumbnailerQueue.h in Headers */,
-				63C093FF11F78E5500A824BC /* MobileVLCKit.h in Headers */,
-				63C0940011F78E5500A824BC /* VLCAudio.h in Headers */,
-				63C0940111F78E5500A824BC /* VLCLibrary.h in Headers */,
-				63C0940211F78E5500A824BC /* VLCMedia.h in Headers */,
-				63C0940311F78E5500A824BC /* VLCMediaDiscoverer.h in Headers */,
-				63C0940411F78E5500A824BC /* VLCMediaList.h in Headers */,
-				63C0940511F78E5500A824BC /* VLCMediaPlayer.h in Headers */,
-				63C0940611F78E5500A824BC /* VLCMediaThumbnailer.h in Headers */,
-				63C0940711F78E5500A824BC /* VLCTime.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		D2AAC07D0554694100DB518D /* MobileMediaLibraryKit */ = {
@@ -492,6 +424,10 @@
 				GCC_PREFIX_HEADER = MobileMediaLibraryKit_Prefix.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/External/MobileVLCKit\"",
+				);
 				PRODUCT_NAME = MobileMediaLibraryKit;
 			};
 			name = Debug;
@@ -507,6 +443,10 @@
 				GCC_PREFIX_HEADER = MobileMediaLibraryKit_Prefix.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/External/MobileVLCKit\"",
+				);
 				PRODUCT_NAME = MobileMediaLibraryKit;
 			};
 			name = Release;
