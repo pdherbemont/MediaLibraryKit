@@ -45,6 +45,22 @@ extern NSString *kMLFileTypeTVShowEpisode;
 @property (nonatomic, retain) NSSet* labels;
 @property (nonatomic, retain) NSNumber* isOnDisk;
 
+/**
+ * the data in this object are about to be put on screen
+ *
+ * If multiple MLFile object are processed, this
+ * increase the priority of the processing for this MLFile.
+ */
+- (void)willDisplay;
+
+/**
+ * We don't display the data of this object on screen.
+ *
+ * This put back the eventually increased priority for this MLFile,
+ * to a default one.
+ * \see willDisplay
+ */
+- (void)didHide;
 @end
 
 

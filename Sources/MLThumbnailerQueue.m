@@ -12,11 +12,16 @@
 #import "MLFile.h"
 #import <UIKit/UIKit.h>
 
+
 @interface ThumbnailOperation : NSOperation <VLCMediaThumbnailerDelegate>
 {
     MLFile *_file;
 }
 @property (retain,readwrite) MLFile *file;
+@end
+
+@interface MLThumbnailerQueue ()
+- (void)didFinishOperation:(ThumbnailOperation *)op;
 @end
 
 @implementation ThumbnailOperation
@@ -41,6 +46,7 @@
     VLCMediaThumbnailer *thumbnailer = [VLCMediaThumbnailer thumbnailerWithMedia:media andDelegate:self];
     [thumbnailer fetchThumbnail];
     [[MLThumbnailerQueue sharedThumbnailerQueue] setSuspended:YES]; // Balanced in -mediaThumbnailer:didFinishThumbnail
+    [[MLThumbnailerQueue sharedThumbnailerQueue] didFinishOperation:self];
     [self retain]; // Balanced in -mediaThumbnailer:didFinishThumbnail:
 }
 - (void)main
@@ -69,9 +75,37 @@
     return shared;
 }
 
+- (id)init
+{
+    self = [super init];
+    if (self != nil) {
+        _fileDescriptionToOperation = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [_fileDescriptionToOperation release];
+    [super dealloc];
+}
+
+
+static inline NSString *hashFromFile(MLFile *file)
+{
+    return [NSString stringWithFormat:@"%p", [[file objectID] URIRepresentation]];
+}
+
+- (void)didFinishOperation:(ThumbnailOperation *)op
+{
+    [_fileDescriptionToOperation setValue:nil forKey:hashFromFile(op.file)];
+}
+
 - (void)addFile:(MLFile *)file
 {
-    [self addOperation:[[[ThumbnailOperation alloc] initWithFile:file] autorelease]];
+    ThumbnailOperation *op = [[ThumbnailOperation alloc] initWithFile:file];
+    [_fileDescriptionToOperation setValue:op forKey:hashFromFile(file)];
+    [self addOperation:op];
 }
 
 - (void)stop
@@ -82,5 +116,17 @@
 - (void)resume
 {
     [self setMaxConcurrentOperationCount:1];
+}
+
+- (void)setHighPriorityForFile:(MLFile *)file
+{
+    ThumbnailOperation *op = [_fileDescriptionToOperation objectForKey:hashFromFile(file)];
+    [op setQueuePriority:NSOperationQueuePriorityHigh];
+}
+
+- (void)setDefaultPriorityForFile:(MLFile *)file
+{
+    ThumbnailOperation *op = [_fileDescriptionToOperation objectForKey:hashFromFile(file)];
+    [op setQueuePriority:NSOperationQueuePriorityNormal];
 }
 @end

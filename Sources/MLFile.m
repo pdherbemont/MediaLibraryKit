@@ -11,6 +11,7 @@
 #import "MLShow.h"
 #import "MLShowEpisode.h"
 #import "MLMediaLibrary.h"
+#import "MLThumbnailerQueue.h"
 
 NSString *kMLFileTypeMovie = @"movie";
 NSString *kMLFileTypeClip = @"clip";
@@ -93,5 +94,15 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
 @dynamic showEpisode;
 @dynamic labels;
 @dynamic isOnDisk;
+
+- (void)willDisplay
+{
+    [[MLThumbnailerQueue sharedThumbnailerQueue] setHighPriorityForFile:self];
+}
+
+- (void)didHide
+{
+    [[MLThumbnailerQueue sharedThumbnailerQueue] setDefaultPriorityForFile:self];
+}
 
 @end

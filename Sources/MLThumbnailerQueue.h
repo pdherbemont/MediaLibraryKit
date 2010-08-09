@@ -11,10 +11,12 @@
 @class MLFile;
 
 @interface MLThumbnailerQueue : NSOperationQueue {
-
+    NSDictionary *_fileDescriptionToOperation;
 }
 + (MLThumbnailerQueue *)sharedThumbnailerQueue;
 - (void)addFile:(MLFile *)file;
+- (void)setHighPriorityForFile:(MLFile *)file;
+- (void)setDefaultPriorityForFile:(MLFile *)file;
 
 - (void)stop;
 - (void)resume;
