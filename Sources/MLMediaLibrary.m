@@ -16,6 +16,7 @@
 #import "MLShowEpisode.h"
 #import "MLThumbnailerQueue.h"
 #import "MLShow.h"
+#import "MLFileParserQueue.h"
 
 #define DEBUG 1
 
@@ -440,6 +441,9 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 {
     MLLog(@"Fetching meta data for %@", file.title);
 
+    if (!file.tracks)
+        [[MLFileParserQueue sharedFileParserQueue] addFile:file];
+
     NSDictionary *tvShowEpisodeInfo = [MLTitleDecrapifier tvShowEpisodeInfoFromString:file.title];
     if (tvShowEpisodeInfo) {
         [self addTVShowEpisodeWithInfo:tvShowEpisodeInfo andFile:file];
@@ -589,9 +593,18 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     for (MLFile *file in results) {
         NSString *urlString = [file url];
         NSURL *fileURL = [NSURL URLWithString:urlString];
-        BOOL exists = [fileManager fileExistsAtPath:[fileURL absoluteString]];
+        BOOL exists = [fileManager fileExistsAtPath:[fileURL path]];
+        if (!exists)
+            NSLog(@"Marking - %@", [fileURL absoluteString]);
         file.isOnDisk = [NSNumber numberWithBool:exists];
     }
+
+    // Get the file to parse
+    request = [self fetchRequestForEntity:@"File"];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES && tracks.@count == 0"]];
+    results = [[self managedObjectContext] executeFetchRequest:request error:nil];
+    for (MLFile *file in results)
+        [[MLFileParserQueue sharedFileParserQueue] addFile:file];
 
     // Get the thumbnails to compute
     request = [self fetchRequestForEntity:@"File"];

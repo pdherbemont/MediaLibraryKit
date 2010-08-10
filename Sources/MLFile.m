@@ -13,6 +13,8 @@
 #import "MLMediaLibrary.h"
 #import "MLThumbnailerQueue.h"
 
+#import <Foundation/Foundation.h>
+
 NSString *kMLFileTypeMovie = @"movie";
 NSString *kMLFileTypeClip = @"clip";
 NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
@@ -25,6 +27,7 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
     NSManagedObjectContext *moc = [[MLMediaLibrary sharedMediaLibrary] managedObjectContext];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"File" inManagedObjectContext:moc];
     [request setEntity:entity];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES"]];
 
     NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObject:descriptor]];
@@ -93,7 +96,9 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
 @dynamic computedThumbnail;
 @dynamic showEpisode;
 @dynamic labels;
+@dynamic tracks;
 @dynamic isOnDisk;
+@dynamic duration;
 
 - (void)willDisplay
 {
@@ -103,6 +108,26 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
 - (void)didHide
 {
     [[MLThumbnailerQueue sharedThumbnailerQueue] setDefaultPriorityForFile:self];
+}
+
+- (NSManagedObject *)videoTrack
+{
+    NSSet *tracks = [self tracks];
+    if (!tracks)
+        return nil;
+    for (NSManagedObject *track in tracks) {
+        if ([[[track entity] name] isEqualToString:@"VideoTrackInformation"])
+            return track;
+    }
+    return nil;
+}
+
+- (size_t)fileSizeInBytes
+{
+    NSFileManager *manager = [NSFileManager defaultManager];
+    NSDictionary *fileAttributes = [manager fileAttributesAtPath:[[NSURL URLWithString:self.url] path] traverseLink:YES];
+    NSNumber *fileSize = [fileAttributes objectForKey:NSFileSize];
+    return [fileSize unsignedLongLongValue];
 }
 
 @end

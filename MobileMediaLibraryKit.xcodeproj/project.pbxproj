@@ -31,6 +31,7 @@
 		6320368011F76EA9002861C2 /* NSXMLNode_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365E11F76EA9002861C2 /* NSXMLNode_Additions.m */; };
 		63C092E911F77CF200A824BC /* MediaLibrary.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */; };
 		63C093DB11F78D8100A824BC /* MLThumbnailerQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */; };
+		63CD005D12109CD100414314 /* MLFileParserQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CD005C12109CD100414314 /* MLFileParserQueue.m */; };
 		7A37EDB71208A1F000D41964 /* MLShowEpisode.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 63C0920A11F776D300A824BC /* MLShowEpisode.h */; };
 		7A37EDB81208A1F000D41964 /* MLFile.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320368E11F76EC3002861C2 /* MLFile.h */; };
 		7A37EDB91208A1F000D41964 /* MLLabel.h in Copy Public headers */ = {isa = PBXBuildFile; fileRef = 6320368F11F76EC3002861C2 /* MLLabel.h */; };
@@ -117,6 +118,8 @@
 		63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = MediaLibrary.xcdatamodel; sourceTree = SOURCE_ROOT; };
 		63C093D811F78D8100A824BC /* MLThumbnailerQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLThumbnailerQueue.h; sourceTree = "<group>"; };
 		63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLThumbnailerQueue.m; sourceTree = "<group>"; };
+		63CD005B12109CD100414314 /* MLFileParserQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLFileParserQueue.h; sourceTree = "<group>"; };
+		63CD005C12109CD100414314 /* MLFileParserQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLFileParserQueue.m; sourceTree = "<group>"; };
 		7A37ED0112089E4A00D41964 /* MobileVLCKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileVLCKit.h; sourceTree = "<group>"; };
 		7A37ED0212089E4A00D41964 /* VLCAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCAudio.h; sourceTree = "<group>"; };
 		7A37ED0312089E4A00D41964 /* VLCLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCLibrary.h; sourceTree = "<group>"; };
@@ -260,6 +263,8 @@
 				6320365E11F76EA9002861C2 /* NSXMLNode_Additions.m */,
 				63C093D811F78D8100A824BC /* MLThumbnailerQueue.h */,
 				63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */,
+				63CD005B12109CD100414314 /* MLFileParserQueue.h */,
+				63CD005C12109CD100414314 /* MLFileParserQueue.m */,
 				63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */,
 			);
 			path = Sources;
@@ -401,6 +406,7 @@
 				6320368011F76EA9002861C2 /* NSXMLNode_Additions.m in Sources */,
 				63C092E911F77CF200A824BC /* MediaLibrary.xcdatamodel in Sources */,
 				63C093DB11F78D8100A824BC /* MLThumbnailerQueue.m in Sources */,
+				63CD005D12109CD100414314 /* MLFileParserQueue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
