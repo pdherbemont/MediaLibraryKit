@@ -441,8 +441,7 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 {
     MLLog(@"Fetching meta data for %@", file.title);
 
-    if (!file.tracks)
-        [[MLFileParserQueue sharedFileParserQueue] addFile:file];
+    [[MLFileParserQueue sharedFileParserQueue] addFile:file];
 
     NSDictionary *tvShowEpisodeInfo = [MLTitleDecrapifier tvShowEpisodeInfoFromString:file.title];
     if (tvShowEpisodeInfo) {
