@@ -11,6 +11,8 @@
 @interface MLMediaLibrary : NSObject {
     NSManagedObjectContext *_managedObjectContext;
     NSManagedObjectModel   *_managedObjectModel;
+
+    BOOL _allowNetworkAccess;
 }
 
 + (id)sharedMediaLibrary;

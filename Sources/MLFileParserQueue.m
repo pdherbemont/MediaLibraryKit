@@ -59,6 +59,9 @@
 {
     NSLog(@"Parsed %@ - %d tracks", media, [[_media tracksInformation] count]);
 
+    if (_media.delegate != self)
+        return;
+
     _media.delegate = nil;
     NSArray *tracks = [_media tracksInformation];
     NSMutableSet *tracksSet = [NSMutableSet setWithCapacity:[tracks count]];
@@ -80,7 +83,7 @@
     [self.file setTracks:tracksSet];
     [self.file setDuration:[[_media length] numberValue]];
     [[MLFileParserQueue sharedFileParserQueue] setSuspended:NO];
-    [_media release];
+    //[_media autorelease];
     _media = nil;
     [self release];
 }

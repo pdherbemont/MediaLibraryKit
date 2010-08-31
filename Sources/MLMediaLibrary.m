@@ -308,6 +308,8 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 
 - (void)fetchMetaDataForShow:(MLShow *)show
 {
+    if (!_allowNetworkAccess)
+        return;
     MLLog(@"Fetching show server time");
 
     // First fetch the serverTime, so that we can update each entry.
@@ -442,11 +444,19 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 
     [[MLFileParserQueue sharedFileParserQueue] addFile:file];
 
+    if (!_allowNetworkAccess) {
+        // Automatically compute the thumbnail
+        [self computeThumbnailForFile:file];
+    }
+
     NSDictionary *tvShowEpisodeInfo = [MLTitleDecrapifier tvShowEpisodeInfoFromString:file.title];
     if (tvShowEpisodeInfo) {
         [self addTVShowEpisodeWithInfo:tvShowEpisodeInfo andFile:file];
         return;
     }
+
+    if (!_allowNetworkAccess)
+        return;
 
     // Go online and fetch info.
 
@@ -604,12 +614,23 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     for (MLFile *file in results)
         [[MLFileParserQueue sharedFileParserQueue] addFile:file];
 
+    if (!_allowNetworkAccess) {
+        // Always attempt to fetch
+        request = [self fetchRequestForEntity:@"File"];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES && computedThumbnail == nil"]];
+        results = [[self managedObjectContext] executeFetchRequest:request error:nil];
+        for (MLFile *file in results)
+            [self computeThumbnailForFile:file];
+        return;
+    }
+
     // Get the thumbnails to compute
     request = [self fetchRequestForEntity:@"File"];
     [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES && hasFetchedInfo == 1 && artworkURL == nil && computedThumbnail == nil"]];
     results = [[self managedObjectContext] executeFetchRequest:request error:nil];
     for (MLFile *file in results)
         [self computeThumbnailForFile:file];
+
 
     // Get to fetch meta data
     request = [self fetchRequestForEntity:@"File"];
