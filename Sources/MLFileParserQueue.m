@@ -79,11 +79,11 @@
         }
         [tracksSet addObject:trackInfo];
     }
-    NSAssert([[self.file tracks] count] == 0, @"Reparsing a file with existing tracks");
+    // NSAssert([[self.file tracks] count] == 0, @"Reparsing a file with existing tracks"); // Don't assert here as we may want to re-parse, after all
     [self.file setTracks:tracksSet];
     [self.file setDuration:[[_media length] numberValue]];
     [[MLFileParserQueue sharedFileParserQueue] setSuspended:NO];
-    //[_media autorelease];
+    //[_media autorelease]; // FIXME: We're purposefully leaking
     _media = nil;
     [self release];
 }
