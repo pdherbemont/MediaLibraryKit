@@ -57,7 +57,7 @@
 - (void)mediaThumbnailer:(VLCMediaThumbnailer *)mediaThumbnailer didFinishThumbnail:(CGImageRef)thumbnail
 {
     mediaThumbnailer.delegate = nil;
-    NSLog(@"Finished thumbnail for %@", self.file.title);
+    MLLog(@"Finished thumbnail for %@", self.file.title);
     self.file.computedThumbnail = UIImagePNGRepresentation([UIImage imageWithCGImage:thumbnail]);
     [[MLThumbnailerQueue sharedThumbnailerQueue] setSuspended:NO];
     [self release];

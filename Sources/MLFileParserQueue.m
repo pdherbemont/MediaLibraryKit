@@ -57,7 +57,7 @@
 
 - (void)mediaDidFinishParsing:(VLCMedia *)media
 {
-    NSLog(@"Parsed %@ - %d tracks", media, [[_media tracksInformation] count]);
+    MLLog(@"Parsed %@ - %d tracks", media, [[_media tracksInformation] count]);
 
     if (_media.delegate != self)
         return;

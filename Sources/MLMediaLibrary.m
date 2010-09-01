@@ -24,8 +24,6 @@
 #import <UIKit/UIKit.h>
 #endif
 
-#define MLLog(...) NSLog(__VA_ARGS__)
-
 // Pref key
 static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 
@@ -44,7 +42,7 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     static id sharedMediaLibrary = nil;
     if (!sharedMediaLibrary) {
         sharedMediaLibrary = [[[self class] alloc] init];
-        NSLog(@"Initializing db in %@", [sharedMediaLibrary databaseFolderPath]);
+        MLLog(@"Initializing db in %@", [sharedMediaLibrary databaseFolderPath]);
         [sharedMediaLibrary updateDatabase];
     }
     return sharedMediaLibrary;
@@ -603,7 +601,7 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
         NSURL *fileURL = [NSURL URLWithString:urlString];
         BOOL exists = [fileManager fileExistsAtPath:[fileURL path]];
         if (!exists)
-            NSLog(@"Marking - %@", [fileURL absoluteString]);
+            MLLog(@"Marking - %@", [fileURL absoluteString]);
         file.isOnDisk = [NSNumber numberWithBool:exists];
     }
 
