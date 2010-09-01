@@ -83,7 +83,7 @@
     [self.file setTracks:tracksSet];
     [self.file setDuration:[[_media length] numberValue]];
     [[MLFileParserQueue sharedFileParserQueue] setSuspended:NO];
-    //[_media autorelease]; // FIXME: We're purposefully leaking
+    [_media autorelease];
     _media = nil;
     [self release];
 }
