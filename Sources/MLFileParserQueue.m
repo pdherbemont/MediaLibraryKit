@@ -77,7 +77,8 @@
             [trackInfo setValue:[track objectForKey:VLCMediaTracksInformationAudioRate] forKey:@"bitrate"];
             [trackInfo setValue:[track objectForKey:VLCMediaTracksInformationAudioChannelsNumber] forKey:@"channelsNumber"];
         }
-        [tracksSet addObject:trackInfo];
+        if (trackInfo)
+            [tracksSet addObject:trackInfo];
     }
     // NSAssert([[self.file tracks] count] == 0, @"Reparsing a file with existing tracks"); // Don't assert here as we may want to re-parse, after all
     [self.file setTracks:tracksSet];
