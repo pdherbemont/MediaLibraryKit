@@ -10,8 +10,9 @@
 
 @class MLFile;
 
-@interface MLFileParserQueue : NSOperationQueue {
+@interface MLFileParserQueue : NSObject {
     NSDictionary *_fileDescriptionToOperation;
+    NSOperationQueue *_queue;
 }
 + (MLFileParserQueue *)sharedFileParserQueue;
 - (void)addFile:(MLFile *)file;
@@ -20,4 +21,6 @@
 
 - (void)stop;
 - (void)resume;
+
+@property (nonatomic, retain) NSOperationQueue *queue;
 @end

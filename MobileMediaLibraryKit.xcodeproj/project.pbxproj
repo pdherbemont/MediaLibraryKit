@@ -29,6 +29,7 @@
 		6320367E11F76EA9002861C2 /* MLTVShowInfoGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365C11F76EA9002861C2 /* MLTVShowInfoGrabber.m */; };
 		6320367F11F76EA9002861C2 /* MLURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365D11F76EA9002861C2 /* MLURLConnection.m */; };
 		6320368011F76EA9002861C2 /* NSXMLNode_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320365E11F76EA9002861C2 /* NSXMLNode_Additions.m */; };
+		63AC766C1247DBC500C4E4B8 /* MLCrashPreventer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AC766B1247DBC500C4E4B8 /* MLCrashPreventer.m */; };
 		63C092E911F77CF200A824BC /* MediaLibrary.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */; };
 		63C093DB11F78D8100A824BC /* MLThumbnailerQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */; };
 		63CD005D12109CD100414314 /* MLFileParserQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CD005C12109CD100414314 /* MLFileParserQueue.m */; };
@@ -114,6 +115,8 @@
 		6320368F11F76EC3002861C2 /* MLLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLLabel.h; sourceTree = "<group>"; };
 		6320369011F76EC3002861C2 /* MLMediaLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMediaLibrary.h; sourceTree = "<group>"; };
 		6320369111F76EC3002861C2 /* MLShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLShow.h; sourceTree = "<group>"; };
+		63AC766A1247DBC500C4E4B8 /* MLCrashPreventer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLCrashPreventer.h; sourceTree = "<group>"; };
+		63AC766B1247DBC500C4E4B8 /* MLCrashPreventer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLCrashPreventer.m; sourceTree = "<group>"; };
 		63C0920A11F776D300A824BC /* MLShowEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLShowEpisode.h; sourceTree = "<group>"; };
 		63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = MediaLibrary.xcdatamodel; sourceTree = SOURCE_ROOT; };
 		63C093D811F78D8100A824BC /* MLThumbnailerQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLThumbnailerQueue.h; sourceTree = "<group>"; };
@@ -265,6 +268,8 @@
 				63C093D911F78D8100A824BC /* MLThumbnailerQueue.m */,
 				63CD005B12109CD100414314 /* MLFileParserQueue.h */,
 				63CD005C12109CD100414314 /* MLFileParserQueue.m */,
+				63AC766A1247DBC500C4E4B8 /* MLCrashPreventer.h */,
+				63AC766B1247DBC500C4E4B8 /* MLCrashPreventer.m */,
 				63C092E811F77CF200A824BC /* MediaLibrary.xcdatamodel */,
 			);
 			path = Sources;
@@ -366,7 +371,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "MobileMediaLibraryKit" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* MobileMediaLibraryKit */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
@@ -407,6 +419,7 @@
 				63C092E911F77CF200A824BC /* MediaLibrary.xcdatamodel in Sources */,
 				63C093DB11F78D8100A824BC /* MLThumbnailerQueue.m in Sources */,
 				63CD005D12109CD100414314 /* MLFileParserQueue.m in Sources */,
+				63AC766C1247DBC500C4E4B8 /* MLCrashPreventer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,7 +484,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphoneos4.2;
 			};
 			name = Debug;
 		};
@@ -484,7 +497,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphoneos4.2;
 			};
 			name = Release;
 		};

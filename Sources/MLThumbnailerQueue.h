@@ -10,14 +10,18 @@
 
 @class MLFile;
 
-@interface MLThumbnailerQueue : NSOperationQueue {
+@interface MLThumbnailerQueue : NSObject {
     NSDictionary *_fileDescriptionToOperation;
+    NSOperationQueue *_queue;
 }
 + (MLThumbnailerQueue *)sharedThumbnailerQueue;
+
 - (void)addFile:(MLFile *)file;
 - (void)setHighPriorityForFile:(MLFile *)file;
 - (void)setDefaultPriorityForFile:(MLFile *)file;
 
 - (void)stop;
 - (void)resume;
+
+@property (nonatomic, retain) NSOperationQueue *queue;
 @end

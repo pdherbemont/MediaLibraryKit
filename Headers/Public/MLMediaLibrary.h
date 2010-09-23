@@ -24,6 +24,8 @@
 - (NSFetchRequest *)fetchRequestForEntity:(NSString *)entity;
 - (id)createObjectForEntity:(NSString *)entity;
 
+- (void)applicationWillExit;
+
 - (void)save;
 - (void)libraryDidDisappear;
 - (void)libraryDidAppear;

@@ -6,11 +6,13 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+
 #import "MLThumbnailerQueue.h"
 #import "VLCMediaThumbnailer.h"
 #import "VLCMedia.h"
 #import "MLFile.h"
-#import <UIKit/UIKit.h>
+#import "MLCrashPreventer.h"
 
 
 @interface ThumbnailOperation : NSOperation <VLCMediaThumbnailerDelegate>
@@ -42,11 +44,14 @@
 
 - (void)fetchThumbnail
 {
+    MLLog(@"Starting THUMB %@", self.file);
+
+    [[MLCrashPreventer sharedPreventer] willParseFile:self.file];
+
     VLCMedia *media = [VLCMedia mediaWithURL:[NSURL URLWithString:self.file.url]];
     VLCMediaThumbnailer *thumbnailer = [VLCMediaThumbnailer thumbnailerWithMedia:media andDelegate:self];
     [thumbnailer fetchThumbnail];
-    [[MLThumbnailerQueue sharedThumbnailerQueue] setSuspended:YES]; // Balanced in -mediaThumbnailer:didFinishThumbnail
-    [[MLThumbnailerQueue sharedThumbnailerQueue] didFinishOperation:self];
+    [[MLThumbnailerQueue sharedThumbnailerQueue].queue setSuspended:YES]; // Balanced in -mediaThumbnailer:didFinishThumbnail
     [self retain]; // Balanced in -mediaThumbnailer:didFinishThumbnail:
 }
 - (void)main
@@ -59,18 +64,22 @@
     mediaThumbnailer.delegate = nil;
     MLLog(@"Finished thumbnail for %@", self.file.title);
     self.file.computedThumbnail = UIImagePNGRepresentation([UIImage imageWithCGImage:thumbnail]);
-    [[MLThumbnailerQueue sharedThumbnailerQueue] setSuspended:NO];
+
+    [[MLCrashPreventer sharedPreventer] didParseFile:self.file];
+    MLThumbnailerQueue *thumbnailer = [MLThumbnailerQueue sharedThumbnailerQueue];
+    [thumbnailer.queue setSuspended:NO];
+    [thumbnailer didFinishOperation:self];
     [self release];
 }
 @end
 
 @implementation MLThumbnailerQueue
+@synthesize queue=_queue;
 + (MLThumbnailerQueue *)sharedThumbnailerQueue
 {
     static MLThumbnailerQueue *shared = nil;
     if (!shared) {
         shared = [[MLThumbnailerQueue alloc] init];
-        [shared setMaxConcurrentOperationCount:1];
     }
     return shared;
 }
@@ -80,12 +89,15 @@
     self = [super init];
     if (self != nil) {
         _fileDescriptionToOperation = [[NSMutableDictionary alloc] init];
+        _queue = [[NSOperationQueue alloc] init];
+        [_queue setMaxConcurrentOperationCount:1];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [_queue release];
     [_fileDescriptionToOperation release];
     [super dealloc];
 }
@@ -103,19 +115,25 @@ static inline NSString *hashFromFile(MLFile *file)
 
 - (void)addFile:(MLFile *)file
 {
+    if ([_fileDescriptionToOperation objectForKey:hashFromFile(file)])
+        return;
+    if (![[MLCrashPreventer sharedPreventer] isFileSafe:file]) {
+        NSLog(@"'%@' is unsafe and will crash, ignoring", file.title);
+        return;
+    }
     ThumbnailOperation *op = [[ThumbnailOperation alloc] initWithFile:file];
     [_fileDescriptionToOperation setValue:op forKey:hashFromFile(file)];
-    [self addOperation:op];
+    [self.queue addOperation:op];
 }
 
 - (void)stop
 {
-    [self setMaxConcurrentOperationCount:0];
+    [_queue setMaxConcurrentOperationCount:0];
 }
 
 - (void)resume
 {
-    [self setMaxConcurrentOperationCount:1];
+    [_queue setMaxConcurrentOperationCount:1];
 }
 
 - (void)setHighPriorityForFile:(MLFile *)file

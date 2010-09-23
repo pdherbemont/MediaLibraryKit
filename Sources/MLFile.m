@@ -21,6 +21,11 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
 
 @implementation MLFile
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<MLFile title='%@'>", [self title]];
+}
+
 + (NSArray *)allFiles
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -32,8 +37,12 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
     NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObject:descriptor]];
 
-    NSArray *movies = [moc executeFetchRequest:request error:nil];
+    NSError *error;
+    NSArray *movies = [moc executeFetchRequest:request error:&error];
 	[request release];
+    if (!movies) {
+        NSLog(@"WARNING: %@", error);
+    }
 
     return movies;
 }
@@ -99,6 +108,37 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
 @dynamic tracks;
 @dynamic isOnDisk;
 @dynamic duration;
+
+- (BOOL)isSafe
+{
+    [self willAccessValueForKey:@"isSafe"];
+    NSNumber *ret = [self primitiveValueForKey:@"isSafe"];
+    [self didAccessValueForKey:@"isSafe"];
+    return [ret boolValue];
+}
+
+- (void)setIsSafe:(BOOL)isSafe
+{
+    [self willChangeValueForKey:@"isSafe"];
+    [self setPrimitiveValue:[NSNumber numberWithBool:isSafe] forKey:@"isSafe"];
+    [self willChangeValueForKey:@"isSafe"];
+}
+
+- (BOOL)isBeingParsed
+{
+    [self willAccessValueForKey:@"isBeingParsed"];
+    NSNumber *ret = [self primitiveValueForKey:@"isBeingParsed"];
+    [self didAccessValueForKey:@"isBeingParsed"];
+    return [ret boolValue];
+}
+
+- (void)setIsBeingParsed:(BOOL)isBeingParsed
+{
+    [self willChangeValueForKey:@"isBeingParsed"];
+    [self setPrimitiveValue:[NSNumber numberWithBool:isBeingParsed] forKey:@"isBeingParsed"];
+    [self willChangeValueForKey:@"isBeingParsed"];
+}
+
 
 - (void)willDisplay
 {

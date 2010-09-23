@@ -60,7 +60,10 @@ static inline NSNumber *numberFromTwoChars(char high, char low)
 
 + (NSDictionary *)tvShowEpisodeInfoFromString:(NSString *)string
 {
-    const char *str = [[string lowercaseString] UTF8String];
+    if (!string)
+        return nil;
+    NSString *lowercaseString = [string lowercaseString];
+    const char *str = [string UTF8String];
 
     // Search for s01e10.
     for (unsigned i = 0; str[i]; i++) {
@@ -73,7 +76,7 @@ static inline NSNumber *numberFromTwoChars(char high, char low)
         {
             NSNumber *season = numberFromTwoChars(str[i+1], str[i+2]);
             NSNumber *episode = numberFromTwoChars(str[i+4], str[i+5]);
-            NSString *tvShowName = i > 0 ? [[string lowercaseString] substringToIndex:i-1] : nil;
+            NSString *tvShowName = i > 0 ? [lowercaseString substringToIndex:i-1] : nil;
             tvShowName = tvShowName ? [[MLTitleDecrapifier decrapify:tvShowName] capitalizedString] : nil;
             return [NSDictionary dictionaryWithObjectsAndKeys:season, @"season", episode, @"episode", tvShowName, @"tvShowName", nil];
         }

@@ -17,6 +17,7 @@
 #import "MLThumbnailerQueue.h"
 #import "MLShow.h"
 #import "MLFileParserQueue.h"
+#import "MLCrashPreventer.h"
 
 #define DEBUG 1
 
@@ -43,7 +44,10 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     if (!sharedMediaLibrary) {
         sharedMediaLibrary = [[[self class] alloc] init];
         MLLog(@"Initializing db in %@", [sharedMediaLibrary databaseFolderPath]);
-        [sharedMediaLibrary updateDatabase];
+
+        // Also force to init the crash preventer
+        // Because it will correctly set up the parser and thumbnail queue
+        [MLCrashPreventer sharedPreventer];
     }
     return sharedMediaLibrary;
 }
@@ -596,14 +600,19 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     NSFetchRequest *request = [self fetchRequestForEntity:@"File"];
     NSArray *results = [[self managedObjectContext] executeFetchRequest:request error:nil];
     NSFileManager *fileManager = [NSFileManager defaultManager];
+
     for (MLFile *file in results) {
         NSString *urlString = [file url];
         NSURL *fileURL = [NSURL URLWithString:urlString];
         BOOL exists = [fileManager fileExistsAtPath:[fileURL path]];
-        if (!exists)
+        if (!exists) {
             MLLog(@"Marking - %@", [fileURL absoluteString]);
+            file.isSafe = YES; // It doesn't exists, it's safe.
+        }
         file.isOnDisk = [NSNumber numberWithBool:exists];
     }
+
+    [[MLCrashPreventer sharedPreventer] markCrasherFiles];
 
     // Get the file to parse
     request = [self fetchRequestForEntity:@"File"];
@@ -661,6 +670,11 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 #endif
     /* Update every hour - FIXME: Preferences key */
     [self performSelector:@selector(updateDatabase) withObject:nil afterDelay:60 * 60];
+}
+
+- (void)applicationWillExit
+{
+    [[MLCrashPreventer sharedPreventer] cancelAllFileParse];
 }
 
 - (void)libraryDidDisappear

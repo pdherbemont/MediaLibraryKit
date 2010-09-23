@@ -47,6 +47,9 @@ extern NSString *kMLFileTypeTVShowEpisode;
 @property (nonatomic, retain) NSNumber *isOnDisk;
 @property (nonatomic, retain) NSNumber *duration;
 
+@property (nonatomic, assign) BOOL isSafe;
+@property (nonatomic, assign) BOOL isBeingParsed;
+
 /**
  * the data in this object are about to be put on screen
  *

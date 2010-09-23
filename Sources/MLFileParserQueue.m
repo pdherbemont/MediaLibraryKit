@@ -9,6 +9,7 @@
 #import "MLFileParserQueue.h"
 #import "MLFile.h"
 #import "MLMediaLibrary.h"
+#import "MLCrashPreventer.h"
 
 @interface MLParsingOperation : NSOperation
 {
@@ -42,14 +43,18 @@
 - (void)parse
 {
     NSAssert(!_media, @"We are already parsing");
+
+    MLLog(@"Starting parsing %@", self.file);
+    [[MLCrashPreventer sharedPreventer] willParseFile:self.file];
+
     _media = [[VLCMedia mediaWithURL:[NSURL URLWithString:self.file.url]] retain];
     _media.delegate = self;
     [_media parse];
     MLFileParserQueue *parserQueue = [MLFileParserQueue sharedFileParserQueue];
-    [parserQueue setSuspended:YES]; // Balanced in -mediaDidFinishParsing
-    [parserQueue didFinishOperation:self];
+    [parserQueue.queue setSuspended:YES]; // Balanced in -mediaDidFinishParsing
     [self retain]; // Balanced in -mediaDidFinishParsing:
 }
+
 - (void)main
 {
     [self performSelectorOnMainThread:@selector(parse) withObject:nil waitUntilDone:YES];
@@ -83,20 +88,24 @@
     // NSAssert([[self.file tracks] count] == 0, @"Reparsing a file with existing tracks"); // Don't assert here as we may want to re-parse, after all
     [self.file setTracks:tracksSet];
     [self.file setDuration:[[_media length] numberValue]];
-    [[MLFileParserQueue sharedFileParserQueue] setSuspended:NO];
+    MLFileParserQueue *parserQueue = [MLFileParserQueue sharedFileParserQueue];
+    [[MLCrashPreventer sharedPreventer] didParseFile:self.file];
+    [parserQueue.queue setSuspended:NO];
+    [parserQueue didFinishOperation:self];
     [_media autorelease];
     _media = nil;
+
     [self release];
 }
 @end
 
 @implementation MLFileParserQueue
+@synthesize queue=_queue;
 + (MLFileParserQueue *)sharedFileParserQueue
 {
     static MLFileParserQueue *shared = nil;
     if (!shared) {
         shared = [[MLFileParserQueue alloc] init];
-        [shared setMaxConcurrentOperationCount:1];
     }
     return shared;
 }
@@ -106,12 +115,15 @@
     self = [super init];
     if (self != nil) {
         _fileDescriptionToOperation = [[NSMutableDictionary alloc] init];
+        _queue = [[NSOperationQueue alloc] init];
+        [_queue setMaxConcurrentOperationCount:1];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [_queue release];
     [_fileDescriptionToOperation release];
     [super dealloc];
 }
@@ -129,19 +141,25 @@ static inline NSString *hashFromFile(MLFile *file)
 
 - (void)addFile:(MLFile *)file
 {
+    if ([_fileDescriptionToOperation objectForKey:hashFromFile(file)])
+        return;
+    if (![[MLCrashPreventer sharedPreventer] isFileSafe:file]) {
+        MLLog(@"%@ is unsafe and will crash, ignoring", file);
+        return;
+    }
     MLParsingOperation *op = [[MLParsingOperation alloc] initWithFile:file];
     [_fileDescriptionToOperation setValue:op forKey:hashFromFile(file)];
-    [self addOperation:op];
+    [self.queue addOperation:op];
 }
 
 - (void)stop
 {
-    [self setMaxConcurrentOperationCount:0];
+    [_queue setMaxConcurrentOperationCount:0];
 }
 
 - (void)resume
 {
-    [self setMaxConcurrentOperationCount:1];
+    [_queue setMaxConcurrentOperationCount:1];
 }
 
 - (void)setHighPriorityForFile:(MLFile *)file
