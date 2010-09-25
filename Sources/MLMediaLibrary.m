@@ -20,6 +20,8 @@
 #import "MLCrashPreventer.h"
 
 #define DEBUG 1
+// To debug
+#define DELETE_LIBRARY_ON_EACH_LAUNCH 0
 
 #ifdef TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -83,7 +85,9 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     int directory = NSLibraryDirectory;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(directory, NSUserDomainMask, YES);
     NSString *directoryPath = [paths objectAtIndex:0];
+#if DELETE_LIBRARY_ON_EACH_LAUNCH
     [[NSFileManager defaultManager] removeItemAtPath:directoryPath error:nil];
+#endif
     return directoryPath;
 }
 
