@@ -59,17 +59,27 @@
     [self performSelectorOnMainThread:@selector(fetchThumbnail) withObject:nil waitUntilDone:YES];
 }
 
+- (void)endThumbnailing
+{
+    [[MLCrashPreventer sharedPreventer] didParseFile:self.file];
+    MLThumbnailerQueue *thumbnailer = [MLThumbnailerQueue sharedThumbnailerQueue];
+    [thumbnailer.queue setSuspended:NO];
+    [thumbnailer didFinishOperation:self];
+    [self release];
+}
 - (void)mediaThumbnailer:(VLCMediaThumbnailer *)mediaThumbnailer didFinishThumbnail:(CGImageRef)thumbnail
 {
     mediaThumbnailer.delegate = nil;
     MLLog(@"Finished thumbnail for %@", self.file.title);
     self.file.computedThumbnail = UIImagePNGRepresentation([UIImage imageWithCGImage:thumbnail]);
 
-    [[MLCrashPreventer sharedPreventer] didParseFile:self.file];
-    MLThumbnailerQueue *thumbnailer = [MLThumbnailerQueue sharedThumbnailerQueue];
-    [thumbnailer.queue setSuspended:NO];
-    [thumbnailer didFinishOperation:self];
-    [self release];
+    [self endThumbnailing];
+}
+
+- (void)mediaThumbnailerDidTimeOut:(VLCMediaThumbnailer *)mediaThumbnailer
+{
+    self.file.thumbnailTimeouted = YES;
+    [self endThumbnailing];
 }
 @end
 

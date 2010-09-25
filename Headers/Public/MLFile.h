@@ -49,6 +49,7 @@ extern NSString *kMLFileTypeTVShowEpisode;
 
 @property (nonatomic, assign) BOOL isSafe;
 @property (nonatomic, assign) BOOL isBeingParsed;
+@property (nonatomic, assign) BOOL thumbnailTimeouted;
 
 /**
  * the data in this object are about to be put on screen

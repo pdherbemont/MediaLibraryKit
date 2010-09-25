@@ -24,6 +24,7 @@
 - (NSFetchRequest *)fetchRequestForEntity:(NSString *)entity;
 - (id)createObjectForEntity:(NSString *)entity;
 
+- (void)applicationWillStart;
 - (void)applicationWillExit;
 
 - (void)save;

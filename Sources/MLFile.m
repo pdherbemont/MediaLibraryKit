@@ -139,6 +139,21 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
     [self willChangeValueForKey:@"isBeingParsed"];
 }
 
+- (BOOL)thumbnailTimeouted
+{
+    [self willAccessValueForKey:@"thumbnailTimeouted"];
+    NSNumber *ret = [self primitiveValueForKey:@"thumbnailTimeouted"];
+    [self didAccessValueForKey:@"thumbnailTimeouted"];
+    return [ret boolValue];
+}
+
+- (void)setThumbnailTimeouted:(BOOL)thumbnailTimeouted
+{
+    [self willChangeValueForKey:@"thumbnailTimeouted"];
+    [self setPrimitiveValue:[NSNumber numberWithBool:thumbnailTimeouted] forKey:@"thumbnailTimeouted"];
+    [self willChangeValueForKey:@"thumbnailTimeouted"];
+}
+
 
 - (void)willDisplay
 {

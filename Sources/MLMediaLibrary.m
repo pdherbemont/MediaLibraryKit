@@ -83,6 +83,7 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     int directory = NSLibraryDirectory;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(directory, NSUserDomainMask, YES);
     NSString *directoryPath = [paths objectAtIndex:0];
+    [[NSFileManager defaultManager] removeItemAtPath:directoryPath error:nil];
     return directoryPath;
 }
 
@@ -612,8 +613,6 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
         file.isOnDisk = [NSNumber numberWithBool:exists];
     }
 
-    [[MLCrashPreventer sharedPreventer] markCrasherFiles];
-
     // Get the file to parse
     request = [self fetchRequestForEntity:@"File"];
     [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES && tracks.@count == 0"]];
@@ -675,6 +674,11 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
 - (void)applicationWillExit
 {
     [[MLCrashPreventer sharedPreventer] cancelAllFileParse];
+}
+
+- (void)applicationWillStart
+{
+    [[MLCrashPreventer sharedPreventer] markCrasherFiles];
 }
 
 - (void)libraryDidDisappear
