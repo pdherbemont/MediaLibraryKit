@@ -35,7 +35,7 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
     [request setEntity:entity];
     [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES"]];
 
-    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
     [request setSortDescriptors:[NSArray arrayWithObject:descriptor]];
 
     NSError *error;
