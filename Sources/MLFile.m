@@ -14,6 +14,7 @@
 #import "MLThumbnailerQueue.h"
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NSString *kMLFileTypeMovie = @"movie";
 NSString *kMLFileTypeClip = @"clip";
@@ -102,12 +103,36 @@ NSString *kMLFileTypeTVShowEpisode = @"tvShowEpisode";
 @dynamic unread;
 @dynamic hasFetchedInfo;
 @dynamic noOnlineMetaData;
-@dynamic computedThumbnail;
 @dynamic showEpisode;
 @dynamic labels;
 @dynamic tracks;
 @dynamic isOnDisk;
 @dynamic duration;
+
+- (NSString *)thumbnailPath
+{
+    NSString *folder = [[MLMediaLibrary sharedMediaLibrary] thumbnailFolderPath];
+    NSURL *url = [[self objectID] URIRepresentation];
+    return [[folder stringByAppendingPathComponent:[url path]] stringByAppendingString:@".png"];
+}
+
+- (UIImage *)computedThumbnail
+{
+    return [UIImage imageWithContentsOfFile:[self thumbnailPath]];
+}
+
+- (void)setComputedThumbnail:(UIImage *)image
+{
+    NSURL *url = [NSURL fileURLWithPath:[self thumbnailPath]];
+
+    NSFileManager *manager = [NSFileManager defaultManager];
+    [manager createDirectoryAtPath:[[self thumbnailPath] stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+    if (!image) {
+        [manager removeItemAtURL:url error:nil];
+        return;
+    }
+    [UIImagePNGRepresentation(image) writeToURL:url atomically:YES];
+}
 
 - (BOOL)isSafe
 {

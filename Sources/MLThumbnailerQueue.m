@@ -71,7 +71,7 @@
 {
     mediaThumbnailer.delegate = nil;
     MLLog(@"Finished thumbnail for %@", self.file.title);
-    self.file.computedThumbnail = UIImagePNGRepresentation([UIImage imageWithCGImage:thumbnail]);
+    self.file.computedThumbnail = [UIImage imageWithCGImage:thumbnail];
 
     [self endThumbnailing];
 }

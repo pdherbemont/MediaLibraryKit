@@ -7,6 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
+#import <UIKit/UIKit.h>
 
 @class MLShowEpisode;
 
@@ -40,13 +41,13 @@ extern NSString *kMLFileTypeTVShowEpisode;
 @property (nonatomic, retain) NSNumber *unread;
 @property (nonatomic, retain) NSNumber *hasFetchedInfo;
 @property (nonatomic, retain) NSNumber *noOnlineMetaData;
-@property (nonatomic, retain) NSData * computedThumbnail;
 @property (nonatomic, retain) MLShowEpisode *showEpisode;
 @property (nonatomic, retain) NSSet *labels;
 @property (nonatomic, retain) NSSet *tracks;
 @property (nonatomic, retain) NSNumber *isOnDisk;
 @property (nonatomic, retain) NSNumber *duration;
 
+@property (nonatomic, retain) UIImage *computedThumbnail;
 @property (nonatomic, assign) BOOL isSafe;
 @property (nonatomic, assign) BOOL isBeingParsed;
 @property (nonatomic, assign) BOOL thumbnailTimeouted;

@@ -91,6 +91,18 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     return directoryPath;
 }
 
+
+- (NSString *)thumbnailFolderPath
+{
+    int directory = NSLibraryDirectory;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(directory, NSUserDomainMask, YES);
+    NSString *directoryPath = [paths objectAtIndex:0];
+#if DELETE_LIBRARY_ON_EACH_LAUNCH
+    [[NSFileManager defaultManager] removeItemAtPath:directoryPath error:nil];
+#endif
+    return [directoryPath stringByAppendingPathComponent:@"Thumbnails"];
+}
+
 - (NSManagedObjectContext *)managedObjectContext
 {
     if (_managedObjectContext)
@@ -627,19 +639,22 @@ static NSString *kLastTVDBUpdateServerTime = @"MLLastTVDBUpdateServerTime";
     if (!_allowNetworkAccess) {
         // Always attempt to fetch
         request = [self fetchRequestForEntity:@"File"];
-        [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES && computedThumbnail == nil"]];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES"]];
         results = [[self managedObjectContext] executeFetchRequest:request error:nil];
-        for (MLFile *file in results)
-            [self computeThumbnailForFile:file];
+        for (MLFile *file in results) {
+            if (!file.computedThumbnail)
+                [self computeThumbnailForFile:file];
+        }
         return;
     }
 
     // Get the thumbnails to compute
     request = [self fetchRequestForEntity:@"File"];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES && hasFetchedInfo == 1 && artworkURL == nil && computedThumbnail == nil"]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"isOnDisk == YES && hasFetchedInfo == 1 && artworkURL == nil"]];
     results = [[self managedObjectContext] executeFetchRequest:request error:nil];
     for (MLFile *file in results)
-        [self computeThumbnailForFile:file];
+        if (!file.computedThumbnail)
+            [self computeThumbnailForFile:file];
 
 
     // Get to fetch meta data

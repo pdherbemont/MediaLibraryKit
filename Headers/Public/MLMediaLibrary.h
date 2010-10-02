@@ -23,6 +23,7 @@
 // May be internal
 - (NSFetchRequest *)fetchRequestForEntity:(NSString *)entity;
 - (id)createObjectForEntity:(NSString *)entity;
+- (NSString *)thumbnailFolderPath;
 
 - (void)applicationWillStart;
 - (void)applicationWillExit;
